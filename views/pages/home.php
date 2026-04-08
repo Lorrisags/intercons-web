@@ -96,9 +96,8 @@ $cta_desc = isset($settings['cta_desc']) ? $settings['cta_desc'] : 'Tim ahli PT 
 <!-- Booking Form -->
 <section id="booking" class="py-5 mt-4">
     <div class="container py-4">
-        <div class="row align-items-center bg-white rounded-4 shadow-sm overflow-hidden border" style="border-color: #e0e0e0;">
-            <!-- Info Kolom Kiri -->
-            <div class="col-lg-5 p-5 text-white h-100" style="background: #005B96;">
+        <div class="row align-items-stretch bg-white rounded-4 shadow-sm overflow-hidden border" style="border-color: #e0e0e0;">
+            <div class="col-lg-5 p-5 text-white" style="background: #005B96;">
                 <h2 class="fw-bold mb-4"><?php echo htmlspecialchars($cta_title); ?></h2>
                 <p class="mb-4" style="color: #E1F5FE; line-height: 1.8;">
                     <?php echo nl2br(htmlspecialchars($cta_desc)); ?>
@@ -110,33 +109,32 @@ $cta_desc = isset($settings['cta_desc']) ? $settings['cta_desc'] : 'Tim ahli PT 
                 </ul>
             </div>
             
-            <!-- Form Kolom Kanan -->
             <div class="col-lg-7 p-5 bg-light">
                 <h3 class="fw-bold mb-4" style="color: #003B73;">Formulir Permintaan</h3>
-                <form action="process_booking.php" method="POST">
+                <form action="process_contact.php" method="POST">
                     
-                    <div class="form-floating mb-3 shadow-sm">
-                        <input type="text" name="company" class="form-control border-0" id="floatingCompany" placeholder="Nama Perusahaan" required>
-                        <label for="floatingCompany" class="text-muted">Nama Perusahaan / Instansi</label>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold">Nama Perusahaan / Instansi</label>
+                        <input type="text" name="company_name" class="form-control form-control-lg border-0 shadow-sm" style="font-size: 0.95rem;" placeholder="Masukkan nama perusahaan" required>
                     </div>
                     
-                    <div class="form-floating mb-3 shadow-sm">
-                        <select name="service" class="form-select border-0" id="floatingService" required>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold">Kebutuhan Layanan / Produk</label>
+                        <select name="service_needed" class="form-select form-select-lg border-0 shadow-sm" style="font-size: 0.95rem;" required>
                             <option value="" selected disabled>-- Pilih Jenis Kebutuhan --</option>
-                            <option value="Perdagangan">Pengadaan Material & Produk Industri</option>
-                            <option value="Jasa Mekanikal">Jasa Mechanical Engineering</option>
-                            <option value="Jasa Elektrikal">Jasa Electrical Service</option>
+                            <option value="Pengadaan Material & Produk Industri">Pengadaan Material & Produk Industri</option>
+                            <option value="Jasa Konstruksi & Sipil">Jasa Konstruksi & Sipil</option>
+                            <option value="Layanan Mekanikal & Elektrikal">Layanan Mekanikal & Elektrikal</option>
                             <option value="Konsultasi">Konsultasi Proyek Industri</option>
                         </select>
-                        <label for="floatingService" class="text-muted">Kebutuhan Layanan / Produk</label>
                     </div>
                     
-                    <div class="form-floating mb-4 shadow-sm">
-                        <textarea name="description" class="form-control border-0" id="floatingDesc" placeholder="Deskripsi Kebutuhan" style="height: 120px" required></textarea>
-                        <label for="floatingDesc" class="text-muted">Jelaskan Detail Kebutuhan Anda</label>
+                    <div class="mb-4">
+                        <label class="form-label text-muted small fw-bold">Jelaskan Detail Kebutuhan Anda</label>
+                        <textarea name="details" class="form-control border-0 shadow-sm" rows="4" placeholder="Jelaskan kebutuhan Anda di sini..." required></textarea>
                     </div>
                     
-                    <button type="submit" class="btn btn-lg w-100 mt-2 shadow fw-bold" style="background-color: #003B73; color: white; border-radius: 8px;">
+                    <button type="submit" class="btn btn-lg w-100 mt-2 shadow fw-bold text-white" style="background-color: #003B73; border-radius: 8px;">
                         Kirim Permintaan Sekarang <i class="fas fa-paper-plane ms-2"></i>
                     </button>
                 </form>

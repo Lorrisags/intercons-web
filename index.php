@@ -116,6 +116,13 @@ switch ($page) {
             exit; 
         }
         
+    case 'admin_contact':
+        if(!isset($_SESSION['admin'])) { header('Location: ?page=login'); exit; }
+        require_once 'views/layouts/admin_header.php';
+        require_once 'views/admin/admin_contact.php';
+        require_once 'views/layouts/admin_footer.php';
+        break;
+        
         require_once 'views/layouts/admin_header.php';
         require_once 'views/admin/products.php';
         require_once 'views/layouts/admin_footer.php';
