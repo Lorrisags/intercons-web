@@ -81,15 +81,15 @@
 
     <!-- Kotak 5: Page - Career -->
     <div class="col-lg-3 col-md-6">
-        <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden text-center" style="transition: transform 0.3s; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'" onclick="window.location.href='?page=admin_career'">
-            <div class="position-absolute top-0 start-0 w-100" style="height: 4px; background-color: #e83e8c;"></div>
+        <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden text-center" style="transition: transform 0.3s; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'" onclick="window.location.href='?page=admin_experience'">
+            <div class="position-absolute top-0 start-0 w-100" style="height: 4px; background-color: #28a745;"></div>
             <div class="card-body p-4">
-                <div class="d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm mb-3" style="width: 60px; height: 60px; background-color: rgba(232, 62, 140, 0.1); color: #e83e8c;">
-                    <i class="fas fa-briefcase fa-2x"></i>
+                <div class="d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm mb-3" style="width: 60px; height: 60px; background-color: rgba(40, 167, 69, 0.1); color: #28a745;">
+                    <i class="fas fa-hard-hat fa-2x"></i>
                 </div>
-                <h5 class="fw-bold text-dark mb-1">Career</h5>
-                <p class="text-muted small mb-3">3 Lowongan Pekerjaan Aktif</p>
-                <a href="?page=admin_career" class="btn btn-sm w-100 fw-bold" style="color: #e83e8c; background-color: rgba(232, 62, 140, 0.05); border: 1px solid rgba(232,62,140,0.2);">Kelola Karir</a>
+                <h5 class="fw-bold text-dark mb-1">Experience</h5>
+                <p class="text-muted small mb-3">Portofolio Proyek Perusahaan</p>
+                <a href="?page=admin_experience" class="btn btn-sm w-100 fw-bold" style="color: #28a745; background-color: rgba(40, 167, 69, 0.05); border: 1px solid rgba(40,167,69,0.2);">Kelola Proyek</a>
             </div>
         </div>
     </div>

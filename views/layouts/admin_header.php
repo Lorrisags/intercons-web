@@ -229,6 +229,22 @@
             <a href="?page=admin_home" class="nav-link position-relative <?php echo ($page == 'admin_home') ? 'active-sub text-white' : ''; ?>">Home Page</a>
             <a href="?page=admin_about" class="nav-link position-relative <?php echo ($page == 'admin_about') ? 'active-sub text-white' : ''; ?>">About Page</a>
             <a href="#" class="nav-link position-relative">Contact Page</a>
+            <?php 
+            // Tambahkan 'admin_experience' ke dalam array agar menu terbuka saat halaman diakses
+            $isPageSectionActive = in_array($page, ['admin_home', 'admin_about', 'admin_contact', 'admin_experience']); 
+        ?>
+        <a href="#pageSubmenu" data-bs-toggle="collapse" class="nav-link <?php echo !$isPageSectionActive ? 'collapsed' : ''; ?>" aria-expanded="<?php echo $isPageSectionActive ? 'true' : 'false'; ?>">
+            <div class="d-flex align-items-center"><i class="far fa-window-maximize icon-main"></i> Page Section</div>
+            <i class="fas fa-chevron-right"></i>
+        </a>
+        <div class="collapse <?php echo $isPageSectionActive ? 'show' : ''; ?>" id="pageSubmenu">
+            <a href="?page=admin_home" class="nav-link position-relative <?php echo ($page == 'admin_home') ? 'active-sub text-white' : ''; ?>">Home Page</a>
+            <a href="?page=admin_about" class="nav-link position-relative <?php echo ($page == 'admin_about') ? 'active-sub text-white' : ''; ?>">About Page</a>
+            
+            <a href="?page=admin_experience" class="nav-link position-relative <?php echo ($page == 'admin_experience') ? 'active-sub text-white' : ''; ?>">Experience Page</a>
+            
+            <a href="#" class="nav-link position-relative">Contact Page</a>
+        </div>
         </div>
 
         <!-- Captcha Section (Dropdown) -->
@@ -255,6 +271,7 @@
         <div class="collapse" id="newsSubmenu">
             <a href="#" class="nav-link position-relative">Semua Berita</a>
             <a href="#" class="nav-link position-relative">Tambah Berita</a>
+        
         </div>
 
         <!-- Event -->

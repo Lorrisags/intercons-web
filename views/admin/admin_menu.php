@@ -18,13 +18,14 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 }
 
 // Daftar menu default
+// Daftar menu default
 $menu_list = [
     'home' => 'Home',
     'about' => 'About',
     'page' => 'Page (Dropdown)',
     'gallery' => '-- Sub: Gallery',
     'team' => '-- Sub: Team',
-    'career' => '-- Sub: Career',
+    'career' => '-- Sub: Experience', // <--- Ubah bagian ini
     'service' => 'Service',
     'product' => 'Product Catalogue',
     'contact' => 'Contact'

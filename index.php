@@ -60,8 +60,24 @@ switch ($page) {
 
     case 'experience':
         require_once 'views/layouts/public_header.php';
-        require_once 'views/pages/career.php';
+        require_once 'views/pages/experience.php'; // Sebelumnya career.php
         require_once 'views/layouts/public_footer.php';
+        break;
+
+    case 'admin_team':
+        // Cek Sesi Login
+        if(!isset($_SESSION['admin'])) { header('Location: ?page=login'); exit; }
+        
+        require_once 'views/layouts/admin_header.php';
+        require_once 'views/admin/admin_team.php';
+        require_once 'views/layouts/admin_footer.php';
+        break;
+
+    case 'admin_experience':
+        if(!isset($_SESSION['admin'])) { header('Location: ?page=login'); exit; }
+        require_once 'views/layouts/admin_header.php';
+        require_once 'views/admin/admin_experience.php';
+        require_once 'views/layouts/admin_footer.php';
         break;
 
 
