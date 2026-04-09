@@ -41,7 +41,7 @@ if (!function_exists('getMenu')) {
             --primary: #003B73;
             --secondary: #005B96;
             --accent: #03A9F4;
-            --text-light: #E1F5FE; /* Ditambahkan agar teks footer terang */
+            --text-light: #E1F5FE;
             --text-dark: #333333;
         }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; color: var(--text-dark); padding-top: 76px; }
@@ -79,7 +79,6 @@ if (!function_exists('getMenu')) {
                     <li class="nav-item"><a class="nav-link" href="?page=about"><?php echo htmlspecialchars(getMenu('about', 'label', 'About')); ?></a></li>
                 <?php endif; ?>
                 
-                <!-- DROPDOWN MENU YANG SUDAH DIPERBAIKI PENUTUPNYA -->
                 <?php if(getMenu('page', 'show', '1') == '1'): ?>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -93,13 +92,11 @@ if (!function_exists('getMenu')) {
                             <li><a class="dropdown-item" href="?page=team"><?php echo htmlspecialchars(getMenu('team', 'label', 'Team')); ?></a></li>
                         <?php endif; ?>
                         <?php if(getMenu('career', 'show', '1') == '1'): ?>
-                            <!-- Mengarah ke halaman experience seperti yang diminta sebelumnya -->
                             <li><a class="dropdown-item" href="?page=experience"><?php echo htmlspecialchars(getMenu('career', 'label', 'Experience')); ?></a></li>
                         <?php endif; ?>
                     </ul>
                 </li>
                 <?php endif; ?>
-                <!-- AKHIR DARI DROPDOWN MENU -->
                 
                 <?php if(getMenu('service', 'show', '1') == '1'): ?>
                     <li class="nav-item"><a class="nav-link" href="?page=service"><?php echo htmlspecialchars(getMenu('service', 'label', 'Service')); ?></a></li>
@@ -113,20 +110,12 @@ if (!function_exists('getMenu')) {
                     <li class="nav-item"><a class="nav-link" href="?page=contact"><?php echo htmlspecialchars(getMenu('contact', 'label', 'Contact')); ?></a></li>
                 <?php endif; ?>
 
-                <!-- Tombol Akses Admin Panel (Hanya muncul jika butuh masuk) -->
-                <?php if(!isset($_SESSION['admin'])): ?>
-                    <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
-                        <a href="?page=login" class="btn btn-outline-primary btn-sm fw-bold px-3" style="border-radius: 20px;">
-                            <i class="fas fa-user-shield me-1"></i> Admin
-                        </a>
-                    </li>
-                <?php else: ?>
-                    <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
-                        <a href="?page=admin" class="btn btn-primary btn-sm fw-bold px-3" style="border-radius: 20px;">
-                            <i class="fas fa-desktop me-1"></i> Dashboard
-                        </a>
-                    </li>
-                <?php endif; ?>
+                <!-- Tombol Akses Admin Panel (Selalu mengarah ke Form Login) -->
+                <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+                    <a href="?page=login" class="btn btn-outline-primary btn-sm fw-bold px-3 shadow-sm" style="border-radius: 20px;">
+                        <i class="fas fa-sign-in-alt me-1"></i> Login Admin
+                    </a>
+                </li>
 
             </ul>
         </div>
