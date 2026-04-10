@@ -214,12 +214,12 @@
             <div class="d-flex align-items-center"><i class="fas fa-cog icon-main"></i> Settings</div>
         </a>
 
+        
         <div class="menu-heading">Modules</div>
 
-        <!-- Page Section (Dropdown) -->
         <?php 
-            // Cek apakah halaman yang dibuka adalah bagian dari menu Page Section
-            $isPageSectionActive = in_array($page, ['admin_home', 'admin_about', 'admin_contact']); 
+            // Mengecek apakah halaman saat ini adalah bagian dari admin (agar menu terbuka otomatis)
+            $isPageSectionActive = (isset($_GET['page']) && strpos($_GET['page'], 'admin_') !== false && $page != 'admin'); 
         ?>
         <a href="#pageSubmenu" data-bs-toggle="collapse" class="nav-link <?php echo !$isPageSectionActive ? 'collapsed' : ''; ?>" aria-expanded="<?php echo $isPageSectionActive ? 'true' : 'false'; ?>">
             <div class="d-flex align-items-center"><i class="far fa-window-maximize icon-main"></i> Page Section</div>
@@ -228,23 +228,12 @@
         <div class="collapse <?php echo $isPageSectionActive ? 'show' : ''; ?>" id="pageSubmenu">
             <a href="?page=admin_home" class="nav-link position-relative <?php echo ($page == 'admin_home') ? 'active-sub text-white' : ''; ?>">Home Page</a>
             <a href="?page=admin_about" class="nav-link position-relative <?php echo ($page == 'admin_about') ? 'active-sub text-white' : ''; ?>">About Page</a>
-            <a href="#" class="nav-link position-relative">Contact Page</a>
-            <?php 
-            // Tambahkan 'admin_experience' ke dalam array agar menu terbuka saat halaman diakses
-            $isPageSectionActive = in_array($page, ['admin_home', 'admin_about', 'admin_contact', 'admin_experience']); 
-        ?>
-        <a href="#pageSubmenu" data-bs-toggle="collapse" class="nav-link <?php echo !$isPageSectionActive ? 'collapsed' : ''; ?>" aria-expanded="<?php echo $isPageSectionActive ? 'true' : 'false'; ?>">
-            <div class="d-flex align-items-center"><i class="far fa-window-maximize icon-main"></i> Page Section</div>
-            <i class="fas fa-chevron-right"></i>
-        </a>
-        <div class="collapse <?php echo $isPageSectionActive ? 'show' : ''; ?>" id="pageSubmenu">
-            <a href="?page=admin_home" class="nav-link position-relative <?php echo ($page == 'admin_home') ? 'active-sub text-white' : ''; ?>">Home Page</a>
-            <a href="?page=admin_about" class="nav-link position-relative <?php echo ($page == 'admin_about') ? 'active-sub text-white' : ''; ?>">About Page</a>
-            
+            <a href="?page=admin_service" class="nav-link position-relative <?php echo ($page == 'admin_service') ? 'active-sub text-white' : ''; ?>">Service Page</a>
+            <a href="?page=admin_products" class="nav-link position-relative <?php echo ($page == 'admin_products') ? 'active-sub text-white' : ''; ?>">Products Catalogue</a>
+            <a href="?page=admin_gallery" class="nav-link position-relative <?php echo ($page == 'admin_gallery') ? 'active-sub text-white' : ''; ?>">Gallery Page</a>
+            <a href="?page=admin_team" class="nav-link position-relative <?php echo ($page == 'admin_team') ? 'active-sub text-white' : ''; ?>">Team Page</a>
             <a href="?page=admin_experience" class="nav-link position-relative <?php echo ($page == 'admin_experience') ? 'active-sub text-white' : ''; ?>">Experience Page</a>
-            
-            <a href="#" class="nav-link position-relative">Contact Page</a>
-        </div>
+            <a href="?page=admin_contact" class="nav-link position-relative <?php echo ($page == 'admin_contact') ? 'active-sub text-white' : ''; ?>">Contact / Booking</a>
         </div>
 
         <!-- Captcha Section (Dropdown) -->

@@ -104,25 +104,29 @@ $slider_items = array_merge($slider_products, $slider_products, $slider_products
     }
 </style>
 
-<!-- 1. HERO SECTION -->
+<?php
+// Mengambil status visibilitas (Jika belum ada, anggap '1' alias tampil)
+$show_hero = isset($settings['show_hero']) ? $settings['show_hero'] : '1';
+$show_stats = isset($settings['show_stats']) ? $settings['show_stats'] : '1';
+$show_products = isset($settings['show_products']) ? $settings['show_products'] : '1';
+$show_cta = isset($settings['show_cta']) ? $settings['show_cta'] : '1';
+?>
+
+<?php if($show_hero == '1'): ?>
 <div style="background-color: #003B73; padding-top: 130px; padding-bottom: 120px; border-bottom-right-radius: 50px;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 mb-4 mb-lg-0">
                 <span class="badge rounded-pill mb-3 py-2 px-3" style="background-color: rgba(3, 169, 244, 0.2); color: #03A9F4; border: 1px solid #03A9F4;">
-                    <i class="fas fa-industry me-1"></i> Perdagangan & Jasa Industri
+                    <i class="fas fa-industry me-1"></i> <?php echo isset($settings['hero_badge']) ? htmlspecialchars($settings['hero_badge']) : ''; ?>
                 </span>
                 <h1 class="display-4 fw-bold text-white mb-3"><?php echo isset($settings['hero_title']) ? htmlspecialchars($settings['hero_title']) : 'Your Solution Provider'; ?></h1>
                 <p class="lead text-light mb-4" style="font-size: 1.1rem; opacity: 0.9;">
-                    <?php echo isset($settings['hero_desc']) ? htmlspecialchars($settings['hero_desc']) : 'PT Intercons hadir sebagai mitra strategis Anda dalam penyediaan material, peralatan, dan solusi layanan industri terpadu dengan standar kualitas terbaik.'; ?>
+                    <?php echo isset($settings['hero_desc']) ? htmlspecialchars($settings['hero_desc']) : ''; ?>
                 </p>
                 <div class="d-flex gap-3">
-                    <a href="#contact" class="btn fw-bold px-4 py-2 text-white shadow" style="background-color: #03A9F4; border-radius: 8px;">
-                        Mulai Proyek <i class="fas fa-arrow-right ms-2"></i>
-                    </a>
-                    <a href="?page=service" class="btn btn-outline-light fw-bold px-4 py-2" style="border-radius: 8px;">
-                        Jelajahi Layanan
-                    </a>
+                    <a href="#contact" class="btn fw-bold px-4 py-2 text-white shadow" style="background-color: #03A9F4; border-radius: 8px;">Mulai Proyek <i class="fas fa-arrow-right ms-2"></i></a>
+                    <a href="?page=service" class="btn btn-outline-light fw-bold px-4 py-2" style="border-radius: 8px;">Jelajahi Layanan</a>
                 </div>
             </div>
             <div class="col-lg-6">
@@ -131,36 +135,26 @@ $slider_items = array_merge($slider_products, $slider_products, $slider_products
         </div>
     </div>
 </div>
+<?php endif; ?>
 
-<!-- 2. STATISTIK KOTAK OVERLAY -->
-<div class="container position-relative" style="margin-top: -60px; z-index: 10;">
+<?php if($show_stats == '1'): ?>
+<div class="container position-relative" style="margin-top: <?php echo ($show_hero == '1') ? '-60px' : '100px'; ?>; z-index: 10;">
     <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
         <div class="card-body p-0">
             <div class="row g-0 text-center">
-                <div class="col-md-3 col-6 py-4 border-end">
-                    <h2 class="fw-bold mb-1" style="color: #005B96;"><?php echo isset($settings['total_products']) ? htmlspecialchars($settings['total_products']) : '150+'; ?></h2>
-                    <small class="text-muted fw-bold" style="letter-spacing: 1px; font-size: 0.75rem;">PRODUK & MATERIAL</small>
-                </div>
-                <div class="col-md-3 col-6 py-4 border-end">
-                    <h2 class="fw-bold mb-1" style="color: #005B96;"><?php echo isset($settings['total_projects']) ? htmlspecialchars($settings['total_projects']) : '450+'; ?></h2>
-                    <small class="text-muted fw-bold" style="letter-spacing: 1px; font-size: 0.75rem;">PROYEK SELESAI</small>
-                </div>
-                <div class="col-md-3 col-6 py-4 border-end">
-                    <h2 class="fw-bold mb-1" style="color: #005B96;"><?php echo isset($settings['total_clients']) ? htmlspecialchars($settings['total_clients']) : '200+'; ?></h2>
-                    <small class="text-muted fw-bold" style="letter-spacing: 1px; font-size: 0.75rem;">KLIEN INDUSTRI</small>
-                </div>
-                <div class="col-md-3 col-6 py-4">
-                    <h2 class="fw-bold mb-1" style="color: #005B96;"><?php echo isset($settings['awards']) ? htmlspecialchars($settings['awards']) : '25+'; ?></h2>
-                    <small class="text-muted fw-bold" style="letter-spacing: 1px; font-size: 0.75rem;">PENGHARGAAN</small>
-                </div>
+                <div class="col-md-3 col-6 py-4 border-end"><h2 class="fw-bold mb-1" style="color: #005B96;"><?php echo isset($settings['total_products']) ? htmlspecialchars($settings['total_products']) : '150+'; ?></h2><small class="text-muted fw-bold">PRODUK & MATERIAL</small></div>
+                <div class="col-md-3 col-6 py-4 border-end"><h2 class="fw-bold mb-1" style="color: #005B96;"><?php echo isset($settings['total_projects']) ? htmlspecialchars($settings['total_projects']) : '450+'; ?></h2><small class="text-muted fw-bold">PROYEK SELESAI</small></div>
+                <div class="col-md-3 col-6 py-4 border-end"><h2 class="fw-bold mb-1" style="color: #005B96;"><?php echo isset($settings['total_clients']) ? htmlspecialchars($settings['total_clients']) : '200+'; ?></h2><small class="text-muted fw-bold">KLIEN INDUSTRI</small></div>
+                <div class="col-md-3 col-6 py-4"><h2 class="fw-bold mb-1" style="color: #005B96;"><?php echo isset($settings['awards']) ? htmlspecialchars($settings['awards']) : '25+'; ?></h2><small class="text-muted fw-bold">PENGHARGAAN</small></div>
             </div>
             <div style="height: 5px; background: linear-gradient(90deg, #03A9F4, #003B73);"></div>
         </div>
     </div>
 </div>
+<?php endif; ?>
 
-<!-- 3. SLIDER PRODUK ANIMASI OTOMATIS -->
-<section class="pt-5 mt-5">
+<?php if($show_products == '1'): ?>
+<section class="<?php echo ($show_hero == '0' && $show_stats == '0') ? 'pt-5 mt-5' : 'pt-5 mt-4'; ?>">
     <div class="container text-center mb-4">
         <h3 class="fw-bold" style="color: #003B73;">Produk & Material Unggulan</h3>
         <p class="text-muted mb-0">Rangkaian produk berkualitas tinggi yang dihasilkan dan disuplai oleh PT Intercons</p>
@@ -179,66 +173,41 @@ $slider_items = array_merge($slider_products, $slider_products, $slider_products
             <?php endforeach; ?>
         </div>
     </div>
-    
-    <div class="text-center mt-3">
-        <small class="text-muted"><i class="fas fa-mouse-pointer me-1"></i> Arahkan kursor ke gambar untuk menjeda animasi.</small>
-    </div>
+    <div class="text-center mt-3"><small class="text-muted"><i class="fas fa-mouse-pointer me-1"></i> Arahkan kursor ke gambar untuk menjeda animasi.</small></div>
 </section>
+<?php endif; ?>
 
-<!-- 4. FORMULIR PERMINTAAN & KONTAK -->
+<?php if($show_cta == '1'): ?>
 <section id="contact" class="py-5 my-5">
     <div class="container">
         <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
             <div class="row g-0">
                 <div class="col-lg-5 text-white p-5 d-flex flex-column justify-content-center" style="background-color: #005B96;">
                     <h3 class="fw-bold mb-3"><?php echo isset($settings['cta_title']) ? htmlspecialchars($settings['cta_title']) : 'Mari Diskusikan Kebutuhan Anda'; ?></h3>
-                    <p class="mb-4 opacity-75"><?php echo isset($settings['cta_desc']) ? nl2br(htmlspecialchars($settings['cta_desc'])) : 'Tim ahli PT Intercons siap memberikan dukungan penuh untuk pengadaan material dan eksekusi proyek industri Anda.'; ?></p>
+                    <p class="mb-4 opacity-75"><?php echo isset($settings['cta_desc']) ? nl2br(htmlspecialchars($settings['cta_desc'])) : ''; ?></p>
                     <div class="d-flex align-items-center mb-3">
-                        <div class="bg-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px; color: #005B96;">
-                            <i class="fas fa-phone-alt"></i>
-                        </div>
-                        <div>
-                            <small class="d-block opacity-75">Telepon</small>
-                            <span class="fw-bold">+62 21 5555 8888</span>
-                        </div>
+                        <div class="bg-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px; color: #005B96;"><i class="fas fa-phone-alt"></i></div>
+                        <div><small class="d-block opacity-75">Telepon</small><span class="fw-bold">+62 21 5555 8888</span></div>
                     </div>
                     <div class="d-flex align-items-center mb-3">
-                        <div class="bg-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px; color: #005B96;">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div>
-                            <small class="d-block opacity-75">Email</small>
-                            <span class="fw-bold">info@intercons.co.id</span>
-                        </div>
+                        <div class="bg-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px; color: #005B96;"><i class="fas fa-envelope"></i></div>
+                        <div><small class="d-block opacity-75">Email</small><span class="fw-bold">info@intercons.co.id</span></div>
                     </div>
                 </div>
                 <div class="col-lg-7 p-5 bg-white">
                     <h4 class="fw-bold mb-4" style="color: #003B73;">Formulir Permintaan</h4>
                     <form action="process_contact.php" method="POST">
-    <div class="row g-3">
-        <div class="col-md-6">
-            <label class="form-label small fw-bold text-muted">Nama Perusahaan / Instansi</label>
-            <input type="text" name="company_name" class="form-control" placeholder="Masukkan nama perusahaan" required>
-        </div>
-        <div class="col-md-6">
-            <label class="form-label small fw-bold text-muted">Nama Kontak</label>
-            <input type="text" name="contact_name" class="form-control" placeholder="Nama lengkap Anda" required>
-        </div>
-        <div class="col-12">
-            <label class="form-label small fw-bold text-muted">Email Perusahaan</label>
-            <input type="email" name="email" class="form-control" placeholder="email@perusahaan.com" required>
-        </div>
-        <div class="col-12">
-            <label class="form-label small fw-bold text-muted">Detail Kebutuhan</label>
-            <textarea name="details" class="form-control" rows="4" placeholder="Jelaskan spesifikasi material atau layanan yang Anda butuhkan..." required></textarea>
-        </div>
-        <div class="col-12 mt-4">
-            <button type="submit" class="btn text-white fw-bold px-4 py-2" style="background-color: #03A9F4; border-radius: 8px;">Kirim Permintaan <i class="fas fa-paper-plane ms-2"></i></button>
-        </div>
-    </div>
-</form>
+                        <div class="row g-3">
+                            <div class="col-md-6"><label class="form-label small fw-bold text-muted">Nama Perusahaan / Instansi</label><input type="text" name="company_name" class="form-control" placeholder="Masukkan nama perusahaan" required></div>
+                            <div class="col-md-6"><label class="form-label small fw-bold text-muted">Nama Kontak</label><input type="text" name="contact_name" class="form-control" placeholder="Nama lengkap Anda" required></div>
+                            <div class="col-12"><label class="form-label small fw-bold text-muted">Email Perusahaan</label><input type="email" name="email" class="form-control" placeholder="email@perusahaan.com" required></div>
+                            <div class="col-12"><label class="form-label small fw-bold text-muted">Detail Kebutuhan</label><textarea name="details" class="form-control" rows="4" placeholder="Jelaskan spesifikasi material atau layanan yang Anda butuhkan..." required></textarea></div>
+                            <div class="col-12 mt-4"><button type="submit" class="btn text-white fw-bold px-4 py-2" style="background-color: #03A9F4; border-radius: 8px;">Kirim Permintaan <i class="fas fa-paper-plane ms-2"></i></button></div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </section>
+<?php endif; ?>
