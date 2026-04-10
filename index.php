@@ -110,23 +110,39 @@ switch ($page) {
         break;
 
     case 'admin_products':
-        // KEAMANAN: Cek sesi login
+        // Cek sesi login
         if(!isset($_SESSION['admin'])) { 
             header('Location: ?page=login'); 
             exit; 
         }
-        
+        require_once 'views/layouts/admin_header.php';
+        require_once 'views/admin/admin_products.php'; // Memanggil halaman admin produk
+        require_once 'views/layouts/admin_footer.php';
+        break;
+
     case 'admin_contact':
-        if(!isset($_SESSION['admin'])) { header('Location: ?page=login'); exit; }
+        if(!isset($_SESSION['admin'])) { 
+            header('Location: ?page=login'); 
+            exit; 
+        }
         require_once 'views/layouts/admin_header.php';
-        require_once 'views/admin/admin_contact.php';
+        require_once 'views/admin/admin_contact.php'; // Memanggil halaman kontak
         require_once 'views/layouts/admin_footer.php';
         break;
-        
-        require_once 'views/layouts/admin_header.php';
-        require_once 'views/admin/products.php';
-        require_once 'views/layouts/admin_footer.php';
-        break;
+
+    // Tambahkan di dalam switch ($page)
+case 'admin_service':
+    if(!isset($_SESSION['admin'])) { header('Location: ?page=login'); exit; }
+    require_once 'views/layouts/admin_header.php';
+    require_once 'views/admin/admin_service.php';
+    require_once 'views/layouts/admin_footer.php';
+    break;
+
+case 'service_detail':
+    require_once 'views/layouts/public_header.php';
+    require_once 'views/pages/service_detail.php';
+    require_once 'views/layouts/public_footer.php';
+    break;
 
     // ==========================================
     // JIKA URL TIDAK COCOK DENGAN APA PUN

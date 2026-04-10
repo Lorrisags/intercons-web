@@ -1,58 +1,51 @@
-<!-- Service Section -->
+<?php
+require_once __DIR__ . '/../../config/database.php';
+$db = (new Database())->getConnection();
+
+$stmt = $db->prepare("SELECT * FROM services ORDER BY id ASC");
+$stmt->execute();
+$services = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
 <section id="services" class="py-5 bg-light" style="min-height: 80vh;">
     <div class="container py-4">
-        <!-- Judul Section -->
         <div class="text-center mb-5">
-            <h2 class="fw-bold" style="color: #003B73;">Layanan Kami</h2>
+            <h2 class="fw-bold" style="color: #003B73;">Layanan Unggulan Kami</h2>
             <div style="height: 4px; width: 60px; background-color: #03A9F4; margin: 0 auto; border-radius: 2px;"></div>
-            <p class="text-muted mt-3">Solusi terintegrasi untuk berbagai kebutuhan industri Anda.</p>
         </div>
 
         <div class="row g-4">
-            <!-- Service 1 -->
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm text-center p-4 border-bottom border-4" style="border-color: #003B73 !important; transition: 0.3s;">
-                    <div class="mb-4 mt-2">
-                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 80px; height: 80px; background-color: #E1F5FE;">
-                            <i class="fas fa-cogs fa-2x" style="color: #003B73;"></i>
+            <?php if(empty($services)): ?>
+                <div class="col-12 text-center py-5">
+                    <h5 class="text-muted">Data layanan belum ditambahkan.</h5>
+                </div>
+            <?php else: ?>
+                <?php foreach($services as $s): ?>
+                <div class="col-md-4 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm text-center border-bottom border-4 rounded-4 overflow-hidden" style="border-color: #fd7e14 !important; transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-8px)'" onmouseout="this.style.transform='translateY(0)'">
+                        
+                        <img src="<?php echo htmlspecialchars($s['image_url']); ?>" alt="<?php echo htmlspecialchars($s['title']); ?>" style="width: 100%; height: 220px; object-fit: cover;">
+                        
+                        <div class="card-body p-4 d-flex flex-column bg-white">
+                            <h4 class="fw-bold mb-3" style="color: #005B96;"><?php echo htmlspecialchars($s['title']); ?></h4>
+                            <p class="text-muted small mb-4"><?php echo htmlspecialchars($s['short_description']); ?></p>
+                            
+                            <div class="mt-auto">
+                                <a href="?page=service_detail&id=<?php echo $s['id']; ?>" class="btn w-100 fw-bold border-warning text-warning rounded-3 hover-warning" style="transition: 0.3s;">
+                                    Read More <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                    <h4 class="fw-bold mb-3" style="color: #005B96;">Mechanical Engineering</h4>
-                    <p class="text-muted">Layanan instalasi perpipaan industri, perakitan mesin fabrikasi, perawatan sistem mekanikal, dan penyediaan suku cadang mesin pabrik.</p>
                 </div>
-            </div>
-
-            <!-- Service 2 -->
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm text-center p-4 border-bottom border-4" style="border-color: #03A9F4 !important; transition: 0.3s;">
-                    <div class="mb-4 mt-2">
-                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 80px; height: 80px; background-color: #E1F5FE;">
-                            <i class="fas fa-bolt fa-2x" style="color: #03A9F4;"></i>
-                        </div>
-                    </div>
-                    <h4 class="fw-bold mb-3" style="color: #005B96;">Electrical Service</h4>
-                    <p class="text-muted">Desain & instalasi panel listrik otomatis (PLC), perbaikan motor listrik industri, dan pemeliharaan gardu distribusi secara profesional.</p>
-                </div>
-            </div>
-
-            <!-- Service 3 -->
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm text-center p-4 border-bottom border-4" style="border-color: #005B96 !important; transition: 0.3s;">
-                    <div class="mb-4 mt-2">
-                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 80px; height: 80px; background-color: #E1F5FE;">
-                            <i class="fas fa-hard-hat fa-2x" style="color: #005B96;"></i>
-                        </div>
-                    </div>
-                    <h4 class="fw-bold mb-3" style="color: #005B96;">Civil Construction</h4>
-                    <p class="text-muted">Pembangunan infrastruktur fisik pabrik, konstruksi gudang baja, perbaikan sipil, dan pembuatan fondasi mesin berat berskala besar.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="text-center mt-5">
-            <a href="?page=home#booking" class="btn btn-lg fw-bold shadow-sm" style="background-color: #003B73; color: white;">
-                Booking Layanan Sekarang <i class="fas fa-calendar-check ms-2"></i>
-            </a>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </div>
 </section>
+
+<style>
+.hover-warning:hover {
+    background-color: #ffc107;
+    color: #fff !important;
+}
+</style>

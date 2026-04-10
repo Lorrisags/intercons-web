@@ -214,29 +214,29 @@ $slider_items = array_merge($slider_products, $slider_products, $slider_products
                 </div>
                 <div class="col-lg-7 p-5 bg-white">
                     <h4 class="fw-bold mb-4" style="color: #003B73;">Formulir Permintaan</h4>
-                    <form action="#" method="POST">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label small fw-bold text-muted">Nama Perusahaan / Instansi</label>
-                                <input type="text" class="form-control" placeholder="Masukkan nama perusahaan">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-bold text-muted">Nama Kontak</label>
-                                <input type="text" class="form-control" placeholder="Nama lengkap Anda">
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label small fw-bold text-muted">Email Perusahaan</label>
-                                <input type="email" class="form-control" placeholder="email@perusahaan.com">
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label small fw-bold text-muted">Detail Kebutuhan</label>
-                                <textarea class="form-control" rows="4" placeholder="Jelaskan spesifikasi material atau layanan yang Anda butuhkan..."></textarea>
-                            </div>
-                            <div class="col-12 mt-4">
-                                <button type="button" class="btn text-white fw-bold px-4 py-2" style="background-color: #03A9F4; border-radius: 8px;">Kirim Permintaan <i class="fas fa-paper-plane ms-2"></i></button>
-                            </div>
-                        </div>
-                    </form>
+                    <form action="process_contact.php" method="POST">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label small fw-bold text-muted">Nama Perusahaan / Instansi</label>
+            <input type="text" name="company_name" class="form-control" placeholder="Masukkan nama perusahaan" required>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label small fw-bold text-muted">Nama Kontak</label>
+            <input type="text" name="contact_name" class="form-control" placeholder="Nama lengkap Anda" required>
+        </div>
+        <div class="col-12">
+            <label class="form-label small fw-bold text-muted">Email Perusahaan</label>
+            <input type="email" name="email" class="form-control" placeholder="email@perusahaan.com" required>
+        </div>
+        <div class="col-12">
+            <label class="form-label small fw-bold text-muted">Detail Kebutuhan</label>
+            <textarea name="details" class="form-control" rows="4" placeholder="Jelaskan spesifikasi material atau layanan yang Anda butuhkan..." required></textarea>
+        </div>
+        <div class="col-12 mt-4">
+            <button type="submit" class="btn text-white fw-bold px-4 py-2" style="background-color: #03A9F4; border-radius: 8px;">Kirim Permintaan <i class="fas fa-paper-plane ms-2"></i></button>
+        </div>
+    </div>
+</form>
                 </div>
             </div>
         </div>
