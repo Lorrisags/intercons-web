@@ -1,7 +1,7 @@
 <?php
 /*
  * Path File: /process_gallery.php
- * Deskripsi: Menangani tambah (upload) dan hapus gambar dari galeri.
+ * Deskripsi: Menangani tambah dan hapus gambar dari galeri DAN dari tampilan bergeser (slider).
  */
 session_start();
 require_once __DIR__ . '/config/database.php';
@@ -14,88 +14,118 @@ if(!isset($_SESSION['admin'])) {
 $db = (new Database())->getConnection();
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
-// 1. Fungsi Mengambil Data Galeri Saat Ini
-function getGalleryData($db) {
-    $stmt = $db->prepare("SELECT setting_value FROM settings WHERE setting_key = 'gallery_data'");
-    $stmt->execute();
+// ==========================================
+// FUNGSI BANTUAN (HELPER)
+// ==========================================
+function getDataFromJson($db, $key) {
+    $stmt = $db->prepare("SELECT setting_value FROM settings WHERE setting_key = :key");
+    $stmt->execute([':key' => $key]);
     $json = $stmt->fetchColumn();
     return $json ? json_decode($json, true) : [];
 }
 
-// 2. Fungsi Menyimpan Data Galeri Baru
-function saveGalleryData($db, $array_data) {
+function saveDataToJson($db, $key, $array_data) {
     $json = json_encode($array_data);
-    $stmt = $db->prepare("SELECT setting_key FROM settings WHERE setting_key = 'gallery_data'");
-    $stmt->execute();
+    $stmt = $db->prepare("SELECT setting_key FROM settings WHERE setting_key = :key");
+    $stmt->execute([':key' => $key]);
     if($stmt->rowCount() > 0) {
-        $upd = $db->prepare("UPDATE settings SET setting_value = :val WHERE setting_key = 'gallery_data'");
-        $upd->execute([':val' => $json]);
+        $upd = $db->prepare("UPDATE settings SET setting_value = :val WHERE setting_key = :key");
+        $upd->execute([':val' => $json, ':key' => $key]);
     } else {
-        $ins = $db->prepare("INSERT INTO settings (setting_key, setting_value) VALUES ('gallery_data', :val)");
-        $ins->execute([':val' => $json]);
+        $ins = $db->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (:key, :val)");
+        $ins->execute([':key' => $key, ':val' => $json]);
     }
 }
 
-$galleries = getGalleryData($db);
+// ==========================================
+// AKSI UNTUK TAB GALERI PROYEK
+// ==========================================
+$galleries = getDataFromJson($db, 'gallery_data');
 
-// --- PROSES TAMBAH FOTO ---
 if ($action === 'add') {
     if(isset($_FILES["image"]) && $_FILES["image"]["error"] === 0) {
         $upload_dir = __DIR__ . '/assets/uploads/gallery/';
         if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
 
         $file_ext = strtolower(pathinfo($_FILES["image"]["name"], PATHINFO_EXTENSION));
-        $allowed_ext = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-
-        if(in_array($file_ext, $allowed_ext)) {
-            // Beri nama unik menggunakan ID
+        if(in_array($file_ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
             $unique_id = uniqid();
             $new_file_name = "gal_" . $unique_id . "." . $file_ext;
             
             if(move_uploaded_file($_FILES["image"]["tmp_name"], $upload_dir . $new_file_name)) {
-                // Masukkan data baru ke urutan PALING ATAS
-                $newItem = [
+                array_unshift($galleries, [
                     'id'    => $unique_id,
                     'img'   => 'assets/uploads/gallery/' . $new_file_name,
                     'title' => $_POST['title'],
                     'loc'   => $_POST['loc']
-                ];
-                array_unshift($galleries, $newItem);
-                saveGalleryData($db, $galleries);
-                
-                echo "<script>alert('Foto berhasil ditambahkan!'); window.location.href='index.php?page=admin_gallery';</script>";
+                ]);
+                saveDataToJson($db, 'gallery_data', $galleries);
+                echo "<script>alert('Foto Galeri ditambahkan!'); window.location.href='index.php?page=admin_gallery';</script>";
                 exit;
             }
-        } else {
-            echo "<script>alert('Format file tidak didukung!'); window.location.href='index.php?page=admin_gallery';</script>";
-            exit;
         }
     }
 } 
-// --- PROSES HAPUS FOTO ---
 elseif ($action === 'delete' && isset($_GET['id'])) {
     $id_to_delete = $_GET['id'];
     $new_galleries = [];
-    
     foreach($galleries as $item) {
         if($item['id'] === $id_to_delete) {
-            // Hapus file fisik dari folder server
             $file_path = __DIR__ . '/' . $item['img'];
-            if(file_exists($file_path)) {
-                unlink($file_path);
-            }
+            if(file_exists($file_path)) unlink($file_path);
         } else {
-            // Simpan foto yang TIDAK dihapus
             $new_galleries[] = $item;
         }
     }
-    
-    // Perbarui database
-    saveGalleryData($db, $new_galleries);
-    echo "<script>alert('Foto berhasil dihapus!'); window.location.href='index.php?page=admin_gallery';</script>";
+    saveDataToJson($db, 'gallery_data', $new_galleries);
+    echo "<script>alert('Foto Galeri dihapus!'); window.location.href='index.php?page=admin_gallery';</script>";
     exit;
 }
 
-// Fallback jika tidak ada aksi
+// ==========================================
+// AKSI UNTUK TAB TAMPILAN BERGESER (SLIDER)
+// ==========================================
+$sliders = getDataFromJson($db, 'slider_data');
+
+if ($action === 'add_slider') {
+    if(isset($_FILES["image"]) && $_FILES["image"]["error"] === 0) {
+        $upload_dir = __DIR__ . '/assets/uploads/sliders/';
+        if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+
+        $file_ext = strtolower(pathinfo($_FILES["image"]["name"], PATHINFO_EXTENSION));
+        if(in_array($file_ext, ['jpg', 'jpeg', 'png', 'webp'])) {
+            $unique_id = uniqid();
+            $new_file_name = "slide_" . $unique_id . "." . $file_ext;
+            
+            if(move_uploaded_file($_FILES["image"]["tmp_name"], $upload_dir . $new_file_name)) {
+                array_unshift($sliders, [
+                    'id'       => $unique_id,
+                    'img'      => 'assets/uploads/sliders/' . $new_file_name,
+                    'name'     => $_POST['name'],
+                    'category' => $_POST['category']
+                ]);
+                saveDataToJson($db, 'slider_data', $sliders);
+                echo "<script>alert('Item Tampilan Bergeser ditambahkan!'); window.location.href='index.php?page=admin_gallery&tab=slider';</script>";
+                exit;
+            }
+        }
+    }
+} 
+elseif ($action === 'delete_slider' && isset($_GET['id'])) {
+    $id_to_delete = $_GET['id'];
+    $new_sliders = [];
+    foreach($sliders as $item) {
+        if($item['id'] === $id_to_delete) {
+            $file_path = __DIR__ . '/' . $item['img'];
+            if(file_exists($file_path)) unlink($file_path);
+        } else {
+            $new_sliders[] = $item;
+        }
+    }
+    saveDataToJson($db, 'slider_data', $new_sliders);
+    echo "<script>alert('Item Tampilan Bergeser dihapus!'); window.location.href='index.php?page=admin_gallery&tab=slider';</script>";
+    exit;
+}
+
 header('Location: index.php?page=admin_gallery');
 ?>

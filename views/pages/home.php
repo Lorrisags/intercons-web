@@ -1,13 +1,13 @@
 <?php
 /*
  * Path File: /views/pages/home.php
- * Deskripsi: Halaman Beranda (Home) Publik dengan animasi slider produk ke samping.
+ * Deskripsi: Halaman Beranda Publik dengan slider animasi otomatis ke samping (Marquee CSS).
  */
 
 require_once __DIR__ . '/../../config/database.php';
 $db = (new Database())->getConnection();
 
-// Mengambil data pengaturan (jika ada) untuk teks dinamis
+// 1. Mengambil data pengaturan untuk teks banner dll
 $stmt = $db->prepare("SELECT setting_key, setting_value FROM settings");
 $stmt->execute();
 $settings = [];
@@ -15,26 +15,36 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     $settings[$row['setting_key']] = $row['setting_value'];
 }
 
-// --- Data Produk untuk Slider Animasi ---
-// (Saat ini menggunakan data placeholder, nanti bisa disambungkan ke database tabel produk)
-$products = [
-    ['img' => 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80', 'name' => 'Industrial Gate Valve'],
-    ['img' => 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80', 'name' => 'Heavy Duty Steel Pipe'],
-    ['img' => 'https://images.unsplash.com/photo-1513828583688-c52646db42da?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80', 'name' => 'Diesel Gen-Set 500kVA'],
-    ['img' => 'https://images.unsplash.com/photo-1581092335397-9583eb92d232?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80', 'name' => 'Control Panel 3 Phase'],
-    ['img' => 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80', 'name' => 'Baja Konstruksi H-Beam'],
-    ['img' => 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80', 'name' => 'Sistem Perpipaan Migas']
-];
-// Menggabungkan array 2x agar scroll tidak terputus (Seamless Infinite Scroll)
-$slider_items = array_merge($products, $products);
+// 2. Mengambil data Tampilan Bergeser (Slider) dari settings database
+$stmt_slide = $db->prepare("SELECT setting_value FROM settings WHERE setting_key = 'slider_data'");
+$stmt_slide->execute();
+$slider_json = $stmt_slide->fetchColumn();
+$slider_products = $slider_json ? json_decode($slider_json, true) : [];
+
+// Jika admin belum menambahkan di menu Tampilan Bergeser, gunakan data contoh
+if (empty($slider_products)) {
+    $slider_products = [
+        ['img' => 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&w=500&q=80', 'name' => 'Industrial Gate Valve', 'category' => 'Mechanical'],
+        ['img' => 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?ixlib=rb-4.0.3&w=500&q=80', 'name' => 'Heavy Duty Steel Pipe', 'category' => 'Material'],
+        ['img' => 'https://images.unsplash.com/photo-1513828583688-c52646db42da?ixlib=rb-4.0.3&w=500&q=80', 'name' => 'Diesel Gen-Set 500kVA', 'category' => 'Electrical'],
+        ['img' => 'https://images.unsplash.com/photo-1581092335397-9583eb92d232?ixlib=rb-4.0.3&w=500&q=80', 'name' => 'Control Panel 3 Phase', 'category' => 'Electrical']
+    ];
+}
+
+$count_products = count($slider_products);
+// Lebar 1 kartu (280px) + margin kiri kanan (15px + 15px = 30px) = 310px total per kartu
+$total_scroll_distance = $count_products * 310;
+
+// Menggabungkan array agar animasi tidak terputus (Seamless Infinite Loop)
+$slider_items = array_merge($slider_products, $slider_products, $slider_products, $slider_products);
 ?>
 
 <style>
-    /* Animasi Marquee / Slider Berjalan ke Samping */
+    /* Animasi Marquee / Slider Berjalan Otomatis ke Samping */
     @keyframes scrollMarquee {
         0% { transform: translateX(0); }
-        /* Menggeser persis 50% dari total lebar karena itemnya diduplikasi */
-        100% { transform: translateX(calc(-280px * 6 - 30px * 6)); } 
+        /* Bergeser tepat sejauh jumlah produk asli, lalu mengulang dengan mulus */
+        100% { transform: translateX(-<?php echo $total_scroll_distance; ?>px); } 
     }
     
     .product-slider-container {
@@ -42,17 +52,17 @@ $slider_items = array_merge($products, $products);
         white-space: nowrap;
         position: relative;
         width: 100%;
-        padding: 30px 0;
+        padding: 30px 0 40px 0;
         background: linear-gradient(to bottom, #ffffff, #f8fafc);
     }
     
     .product-slide-track {
         display: inline-flex;
-        /* Kecepatan animasi, 30 detik untuk 1 putaran penuh */
-        animation: scrollMarquee 30s linear infinite;
+        /* Kecepatan animasi (ubah angka 20s untuk mempercepat/memperlambat) */
+        animation: scrollMarquee 20s linear infinite;
     }
     
-    /* Pause animasi saat pengunjung menaruh kursor mouse di atasnya */
+    /* Animasi berhenti jika mouse diletakkan di atas gambar */
     .product-slide-track:hover {
         animation-play-state: paused;
     }
@@ -64,9 +74,10 @@ $slider_items = array_merge($products, $products);
         border-radius: 12px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.06);
         overflow: hidden;
-        white-space: normal; /* Mengembalikan teks agar bisa turun ke bawah */
+        white-space: normal; /* Teks bisa turun ke bawah */
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         cursor: pointer;
+        flex: 0 0 auto;
     }
     
     .product-card:hover {
@@ -89,7 +100,7 @@ $slider_items = array_merge($products, $products);
     .product-card-body h6 {
         color: #003B73;
         font-weight: 700;
-        margin-bottom: 0;
+        margin-bottom: 5px;
     }
 </style>
 
@@ -101,9 +112,9 @@ $slider_items = array_merge($products, $products);
                 <span class="badge rounded-pill mb-3 py-2 px-3" style="background-color: rgba(3, 169, 244, 0.2); color: #03A9F4; border: 1px solid #03A9F4;">
                     <i class="fas fa-industry me-1"></i> Perdagangan & Jasa Industri
                 </span>
-                <h1 class="display-4 fw-bold text-white mb-3"><?php echo isset($settings['home_title']) ? htmlspecialchars($settings['home_title']) : 'NYUOBAA'; ?></h1>
+                <h1 class="display-4 fw-bold text-white mb-3"><?php echo isset($settings['hero_title']) ? htmlspecialchars($settings['hero_title']) : 'Your Solution Provider'; ?></h1>
                 <p class="lead text-light mb-4" style="font-size: 1.1rem; opacity: 0.9;">
-                    <?php echo isset($settings['home_desc']) ? htmlspecialchars($settings['home_desc']) : 'PT Intercons hadir sebagai mitra strategis Anda dalam penyediaan material, peralatan, dan solusi layanan industri terpadu dengan standar kualitas terbaik.'; ?>
+                    <?php echo isset($settings['hero_desc']) ? htmlspecialchars($settings['hero_desc']) : 'PT Intercons hadir sebagai mitra strategis Anda dalam penyediaan material, peralatan, dan solusi layanan industri terpadu dengan standar kualitas terbaik.'; ?>
                 </p>
                 <div class="d-flex gap-3">
                     <a href="#contact" class="btn fw-bold px-4 py-2 text-white shadow" style="background-color: #03A9F4; border-radius: 8px;">
@@ -127,44 +138,42 @@ $slider_items = array_merge($products, $products);
         <div class="card-body p-0">
             <div class="row g-0 text-center">
                 <div class="col-md-3 col-6 py-4 border-end">
-                    <h2 class="fw-bold mb-1" style="color: #005B96;"><?php echo isset($settings['stat1_val']) ? htmlspecialchars($settings['stat1_val']) : '27 jan'; ?></h2>
+                    <h2 class="fw-bold mb-1" style="color: #005B96;"><?php echo isset($settings['total_products']) ? htmlspecialchars($settings['total_products']) : '150+'; ?></h2>
                     <small class="text-muted fw-bold" style="letter-spacing: 1px; font-size: 0.75rem;">PRODUK & MATERIAL</small>
                 </div>
                 <div class="col-md-3 col-6 py-4 border-end">
-                    <h2 class="fw-bold mb-1" style="color: #005B96;"><?php echo isset($settings['stat2_val']) ? htmlspecialchars($settings['stat2_val']) : '2004'; ?></h2>
+                    <h2 class="fw-bold mb-1" style="color: #005B96;"><?php echo isset($settings['total_projects']) ? htmlspecialchars($settings['total_projects']) : '450+'; ?></h2>
                     <small class="text-muted fw-bold" style="letter-spacing: 1px; font-size: 0.75rem;">PROYEK SELESAI</small>
                 </div>
                 <div class="col-md-3 col-6 py-4 border-end">
-                    <h2 class="fw-bold mb-1" style="color: #005B96;"><?php echo isset($settings['stat3_val']) ? htmlspecialchars($settings['stat3_val']) : '20000'; ?></h2>
+                    <h2 class="fw-bold mb-1" style="color: #005B96;"><?php echo isset($settings['total_clients']) ? htmlspecialchars($settings['total_clients']) : '200+'; ?></h2>
                     <small class="text-muted fw-bold" style="letter-spacing: 1px; font-size: 0.75rem;">KLIEN INDUSTRI</small>
                 </div>
                 <div class="col-md-3 col-6 py-4">
-                    <h2 class="fw-bold mb-1" style="color: #005B96;"><?php echo isset($settings['stat4_val']) ? htmlspecialchars($settings['stat4_val']) : '15'; ?></h2>
+                    <h2 class="fw-bold mb-1" style="color: #005B96;"><?php echo isset($settings['awards']) ? htmlspecialchars($settings['awards']) : '25+'; ?></h2>
                     <small class="text-muted fw-bold" style="letter-spacing: 1px; font-size: 0.75rem;">PENGHARGAAN</small>
                 </div>
             </div>
-            <!-- Garis bawah stat -->
             <div style="height: 5px; background: linear-gradient(90deg, #03A9F4, #003B73);"></div>
         </div>
     </div>
 </div>
 
-<!-- 3. FITUR BARU: ANIMASI SLIDER PRODUK BERJALAN -->
+<!-- 3. SLIDER PRODUK ANIMASI OTOMATIS -->
 <section class="pt-5 mt-5">
     <div class="container text-center mb-4">
         <h3 class="fw-bold" style="color: #003B73;">Produk & Material Unggulan</h3>
         <p class="text-muted mb-0">Rangkaian produk berkualitas tinggi yang dihasilkan dan disuplai oleh PT Intercons</p>
     </div>
     
-    <!-- Wadah Slider -->
     <div class="product-slider-container shadow-sm border-top border-bottom">
         <div class="product-slide-track">
-            <!-- Looping Data Produk -->
             <?php foreach($slider_items as $item): ?>
             <div class="product-card" onclick="window.location.href='?page=products'">
-                <img src="<?php echo $item['img']; ?>" alt="<?php echo $item['name']; ?>">
+                <img src="<?php echo htmlspecialchars($item['img']); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>">
                 <div class="product-card-body">
-                    <h6><?php echo $item['name']; ?></h6>
+                    <span class="badge mb-2" style="background-color: #E1F5FE; color: #003B73;"><?php echo htmlspecialchars($item['category']); ?></span>
+                    <h6><?php echo htmlspecialchars($item['name']); ?></h6>
                 </div>
             </div>
             <?php endforeach; ?>
@@ -172,7 +181,7 @@ $slider_items = array_merge($products, $products);
     </div>
     
     <div class="text-center mt-3">
-        <small class="text-muted"><i class="fas fa-hand-pointer me-1"></i> Arahkan kursor untuk menjeda, klik untuk melihat katalog lengkap.</small>
+        <small class="text-muted"><i class="fas fa-mouse-pointer me-1"></i> Arahkan kursor ke gambar untuk menjeda animasi.</small>
     </div>
 </section>
 
@@ -182,8 +191,8 @@ $slider_items = array_merge($products, $products);
         <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
             <div class="row g-0">
                 <div class="col-lg-5 text-white p-5 d-flex flex-column justify-content-center" style="background-color: #005B96;">
-                    <h3 class="fw-bold mb-3">Mari Diskusikan Kebutuhan Anda</h3>
-                    <p class="mb-4 opacity-75">Tim ahli PT Intercons siap memberikan dukungan penuh untuk mensukseskan proyek industri Anda dari awal hingga akhir.</p>
+                    <h3 class="fw-bold mb-3"><?php echo isset($settings['cta_title']) ? htmlspecialchars($settings['cta_title']) : 'Mari Diskusikan Kebutuhan Anda'; ?></h3>
+                    <p class="mb-4 opacity-75"><?php echo isset($settings['cta_desc']) ? nl2br(htmlspecialchars($settings['cta_desc'])) : 'Tim ahli PT Intercons siap memberikan dukungan penuh untuk pengadaan material dan eksekusi proyek industri Anda.'; ?></p>
                     <div class="d-flex align-items-center mb-3">
                         <div class="bg-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px; color: #005B96;">
                             <i class="fas fa-phone-alt"></i>
