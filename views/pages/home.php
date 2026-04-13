@@ -131,17 +131,19 @@ $show_cta = isset($settings['show_cta']) ? $settings['show_cta'] : '1';
             </div>
             <div class="col-lg-6">
     <div id="heroCarousel" class="carousel slide carousel-fade rounded-4 shadow-lg border border-4 overflow-hidden" data-bs-ride="carousel" style="border-color: rgba(255,255,255,0.1) !important;">
-       <div class="carousel-inner">
+      
+    
+    <div class="carousel-inner">
     <?php 
     $slider_found = false;
     $is_first = true;
     for($i=1; $i<=3; $i++): 
-        $img_data = isset($settings['hero_img_'.$i]) ? $settings['hero_img_'.$i] : '';
-        // Cek apakah string diawali dengan data:image (format Base64)
-        if(strpos($img_data, 'data:image') === 0):
+        $img_path = isset($settings['hero_img_'.$i]) ? trim($settings['hero_img_'.$i]) : '';
+        // Cek apakah data gambar ada (tidak kosong)
+        if(!empty($img_path)):
     ?>
         <div class="carousel-item <?php echo $is_first ? 'active' : ''; ?>" data-bs-interval="3000">
-            <img src="<?php echo $img_data; ?>" class="d-block w-100" style="height: 400px; object-fit: cover;">
+            <img src="<?php echo htmlspecialchars($img_path); ?>" class="d-block w-100" style="height: 400px; object-fit: cover;">
         </div>
     <?php 
         $is_first = false;
@@ -149,6 +151,7 @@ $show_cta = isset($settings['show_cta']) ? $settings['show_cta'] : '1';
         endif; 
     endfor; 
 
+    // Tampilan default jika belum ada gambar
     if(!$slider_found): ?>
         <div class="carousel-item active">
             <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800" class="d-block w-100" style="height: 400px; object-fit: cover;">
