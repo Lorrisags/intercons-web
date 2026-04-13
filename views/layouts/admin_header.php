@@ -195,10 +195,10 @@
 <div class="admin-sidebar shadow-lg">
     
     <!-- Brand / Logo (Kini bisa diklik dan kembali ke Dashboard) -->
-    <a href="?page=admin" class="sidebar-brand">
-        <i class="fas fa-layer-group text-primary me-3 fa-lg"></i>
-        <span>Admin<span class="text-primary fw-light">Panel</span></span>
-    </a>
+    <a href="?page=admin" class="sidebar-brand d-flex align-items-center">
+    <img src="assets/uploads/gallery/intercons.png" alt="Logo Admin" style="height: 32px; margin-right: 12px;">
+    <span style="font-size: 1.1rem; font-weight: 700;">PT.INTERCONS</span>
+</a>
 
     <!-- Menus -->
     <div class="sidebar-menu-container">
@@ -270,12 +270,12 @@
 
         <!-- Subscriber (Dropdown) -->
         <a href="#subscriberSubmenu" data-bs-toggle="collapse" class="nav-link">
-            <div class="d-flex align-items-center"><i class="fas fa-envelope-open-text icon-main"></i> Subscriber</div>
-            <i class="fas fa-chevron-right"></i>
-        </a>
-        <div class="collapse" id="subscriberSubmenu">
-            <a href="#" class="nav-link position-relative">Daftar Subscriber</a>
-        </div>
+    <div class="d-flex align-items-center"><i class="fas fa-envelope-open-text icon-main"></i> Subscriber</div>
+    <i class="fas fa-chevron-right"></i>
+</a>
+<div class="collapse <?php echo ($page == 'admin_subscriber') ? 'show' : ''; ?>" id="subscriberSubmenu">
+    <a href="?page=admin_subscriber" class="nav-link position-relative <?php echo ($page == 'admin_subscriber') ? 'active-sub text-white' : ''; ?>">Daftar Subscriber</a>
+</div>
 
         <div class="menu-heading">Media & Components</div>
 

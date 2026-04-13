@@ -47,8 +47,10 @@
                     <div class="login-bg"></div>
                     <div class="position-absolute w-100 h-100 top-0 start-0" style="background-color: rgba(0, 59, 115, 0.7);"></div>
                     <div class="position-absolute top-50 start-50 translate-middle text-center w-100 px-4">
-                        <i class="fas fa-globe-asia fa-4x text-white mb-3"></i>
-                        <h2 class="text-white fw-bold">PT Intercons</h2>
+                       <div class="d-flex align-items-center justify-content-center mb-3">
+    <img src="assets/uploads/gallery/intercons.png" alt="Logo PT Intercons" style="height: 55px; margin-right: 15px;">
+    <h2 class="text-white fw-bold mb-0">PT.INTERCONS</h2>
+</div>
                         <p class="text-white-50">Sistem Manajemen Portal Informasi & Layanan Industri.</p>
                     </div>
                 </div>

@@ -46,7 +46,7 @@ if (!function_exists('getMenu')) {
         }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; color: var(--text-dark); padding-top: 76px; }
         
-        .navbar { background-color: #ffffff; padding: 1rem 2rem; border-bottom: 1px solid #eee; }
+        .navbar { background-color: #ffffff; padding: 0.5rem 2rem; border-bottom: 1px solid #eee; }
         .navbar-brand { color: var(--primary) !important; font-weight: 800; text-transform: uppercase; font-size: 1.4rem; }
         .navbar-brand i { color: var(--accent); margin-right: 8px; }
         
@@ -61,9 +61,10 @@ if (!function_exists('getMenu')) {
 <nav class="navbar navbar-expand-lg fixed-top shadow-sm">
     <div class="container">
         <!-- Logo -->
-        <a class="navbar-brand d-flex align-items-center" href="?page=home">
-            <i class="fas fa-layer-group fa-lg"></i> Intercons
-        </a>
+       <a class="navbar-brand d-flex align-items-center" href="?page=home">
+    <img src="assets/uploads/gallery/intercons.png" alt="Logo Intercons" style="height: 40px; margin-right: 10px;">
+    <span style="font-weight: 800; letter-spacing: 0.5px;">PT.INTERCONS</span>
+</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>

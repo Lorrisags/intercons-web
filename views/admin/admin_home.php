@@ -27,6 +27,31 @@ $show_products = isset($settings['show_products']) ? $settings['show_products'] 
 $show_cta = isset($settings['show_cta']) ? $settings['show_cta'] : '1';
 ?>
 
+<div class="col-md-4">
+    <label class="form-label fw-bold text-muted small">Gambar Slider 1</label>
+    <input type="file" name="hero_img_1" class="form-control mb-2">
+    <input type="hidden" name="old_hero_img_1" value="<?php echo isset($settings['hero_img_1']) ? $settings['hero_img_1'] : ''; ?>">
+    <?php if(!empty($settings['hero_img_1'])): ?>
+    <img src="<?php echo $settings['hero_img_1']; ?>" class="img-thumbnail" style="height: 60px;">
+<?php endif; ?>
+</div>
+<div class="col-md-4">
+    <label class="form-label fw-bold text-muted small">Gambar Slider 2</label>
+    <input type="file" name="hero_img_2" class="form-control mb-2">
+    <input type="hidden" name="old_hero_img_2" value="<?php echo isset($settings['hero_img_2']) ? $settings['hero_img_2'] : ''; ?>">
+   <?php if(!empty($settings['hero_img_1'])): ?>
+    <img src="<?php echo $settings['hero_img_1']; ?>" class="img-thumbnail" style="height: 60px;">
+<?php endif; ?>
+</div>
+<div class="col-md-4">
+    <label class="form-label fw-bold text-muted small">Gambar Slider 3</label>
+    <input type="file" name="hero_img_3" class="form-control mb-2">
+    <input type="hidden" name="old_hero_img_3" value="<?php echo isset($settings['hero_img_3']) ? $settings['hero_img_3'] : ''; ?>">
+    <?php if(!empty($settings['hero_img_1'])): ?>
+    <img src="<?php echo $settings['hero_img_1']; ?>" class="img-thumbnail" style="height: 60px;">
+<?php endif; ?>
+</div>
+
 <div class="d-flex align-items-center mb-4 pb-2 border-bottom">
     <div class="bg-primary text-white rounded p-2 me-3 shadow-sm"><i class="fas fa-home fa-fw fa-lg"></i></div>
     <div>
@@ -74,20 +99,36 @@ $show_cta = isset($settings['show_cta']) ? $settings['show_cta'] : '1';
             </div>
         </div>
 
-        <div class="col-12">
-            <div class="card border-0 shadow-sm rounded-3">
-                <div class="card-header bg-white py-3 border-bottom-0">
-                    <h6 class="fw-bold mb-0 text-primary"><i class="fas fa-image me-2"></i>2. Bagian Banner Utama (Hero Section)</h6>
-                </div>
-                <div class="card-body p-4 bg-light rounded-bottom-3">
-                    <div class="row g-3">
-                        <div class="col-md-6"><label class="form-label fw-bold text-muted small">Judul Utama (Headline)</label><input type="text" class="form-control" name="hero_title" value="<?php echo htmlspecialchars($hero_title); ?>" required></div>
-                        <div class="col-md-6"><label class="form-label fw-bold text-muted small">Teks Label Kecil (Badge)</label><input type="text" class="form-control" name="hero_badge" value="<?php echo htmlspecialchars($hero_badge); ?>" required></div>
-                        <div class="col-12"><label class="form-label fw-bold text-muted small">Deskripsi Singkat (Sub-headline)</label><textarea class="form-control" name="hero_desc" rows="3" required><?php echo htmlspecialchars($hero_desc); ?></textarea></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div class="row g-3">
+    <div class="col-md-6"><label class="form-label fw-bold text-muted small">Judul Utama (Headline)</label><input type="text" class="form-control" name="hero_title" value="<?php echo htmlspecialchars($hero_title); ?>" required></div>
+    <div class="col-md-6"><label class="form-label fw-bold text-muted small">Teks Label Kecil (Badge)</label><input type="text" class="form-control" name="hero_badge" value="<?php echo htmlspecialchars($hero_badge); ?>" required></div>
+    <div class="col-12"><label class="form-label fw-bold text-muted small">Deskripsi Singkat (Sub-headline)</label><textarea class="form-control" name="hero_desc" rows="3" required><?php echo htmlspecialchars($hero_desc); ?></textarea></div>
+    
+    <div class="col-md-4">
+        <label class="form-label fw-bold text-muted small">Gambar Slider 1</label>
+        <input type="file" name="hero_img_1" class="form-control mb-2" accept="image/*">
+        <input type="hidden" name="old_hero_img_1" value="<?php echo isset($settings['hero_img_1']) ? $settings['hero_img_1'] : ''; ?>">
+        <?php if(!empty($settings['hero_img_1'])): ?>
+            <img src="<?php echo $settings['hero_img_1']; ?>" class="img-thumbnail" style="height: 60px; object-fit: cover;">
+        <?php endif; ?>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label fw-bold text-muted small">Gambar Slider 2</label>
+        <input type="file" name="hero_img_2" class="form-control mb-2" accept="image/*">
+        <input type="hidden" name="old_hero_img_2" value="<?php echo isset($settings['hero_img_2']) ? $settings['hero_img_2'] : ''; ?>">
+        <?php if(!empty($settings['hero_img_2'])): ?>
+            <img src="<?php echo $settings['hero_img_2']; ?>" class="img-thumbnail" style="height: 60px; object-fit: cover;">
+        <?php endif; ?>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label fw-bold text-muted small">Gambar Slider 3</label>
+        <input type="file" name="hero_img_3" class="form-control mb-2" accept="image/*">
+        <input type="hidden" name="old_hero_img_3" value="<?php echo isset($settings['hero_img_3']) ? $settings['hero_img_3'] : ''; ?>">
+        <?php if(!empty($settings['hero_img_3'])): ?>
+            <img src="<?php echo $settings['hero_img_3']; ?>" class="img-thumbnail" style="height: 60px; object-fit: cover;">
+        <?php endif; ?>
+    </div>
+</div>
 
         <div class="col-12">
             <div class="card border-0 shadow-sm rounded-3">

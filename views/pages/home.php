@@ -130,8 +130,52 @@ $show_cta = isset($settings['show_cta']) ? $settings['show_cta'] : '1';
                 </div>
             </div>
             <div class="col-lg-6">
-                <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Industri" class="img-fluid rounded-4 shadow-lg border border-4" style="border-color: rgba(255,255,255,0.1) !important;">
-            </div>
+    <div id="heroCarousel" class="carousel slide carousel-fade rounded-4 shadow-lg border border-4 overflow-hidden" data-bs-ride="carousel" style="border-color: rgba(255,255,255,0.1) !important;">
+       <div class="carousel-inner">
+    <?php 
+    $slider_found = false;
+    $is_first = true;
+    for($i=1; $i<=3; $i++): 
+        $img_data = isset($settings['hero_img_'.$i]) ? $settings['hero_img_'.$i] : '';
+        // Cek apakah string diawali dengan data:image (format Base64)
+        if(strpos($img_data, 'data:image') === 0):
+    ?>
+        <div class="carousel-item <?php echo $is_first ? 'active' : ''; ?>" data-bs-interval="3000">
+            <img src="<?php echo $img_data; ?>" class="d-block w-100" style="height: 400px; object-fit: cover;">
+        </div>
+    <?php 
+        $is_first = false;
+        $slider_found = true;
+        endif; 
+    endfor; 
+
+    if(!$slider_found): ?>
+        <div class="carousel-item active">
+            <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800" class="d-block w-100" style="height: 400px; object-fit: cover;">
+        </div>
+    <?php endif; ?>
+</div>
+
+        <?php if($slider_found): ?>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </button>
+        <?php endif; ?>
+    </div>
+</div>
+        
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+</div>
+</div>
         </div>
     </div>
 </div>

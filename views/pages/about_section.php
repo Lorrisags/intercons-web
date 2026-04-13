@@ -22,6 +22,10 @@ $about_vision = isset($settings['about_vision']) ? $settings['about_vision'] : '
 $about_mission = isset($settings['about_mission']) ? $settings['about_mission'] : "Menyediakan layanan dan produk berkualitas tinggi yang memenuhi standar keselamatan kerja (HSE).\nMengembangkan sumber daya manusia yang profesional, handal, dan kompeten.\nMembangun kemitraan strategis dengan klien berdasarkan transparansi dan kepercayaan.";
 $about_address = isset($settings['about_address']) ? $settings['about_address'] : 'Jl. Industri Raya No. 123, Surabaya, Jawa Timur, Indonesia';
 $about_contact = isset($settings['about_contact']) ? $settings['about_contact'] : "+62 31 5555 8888\ninfo@intercons.co.id";
+// Mengambil data Layanan (Service) untuk ditampilkan sebagai Badge
+$stmt_srv = $db->prepare("SELECT title FROM services ORDER BY id DESC LIMIT 6");
+$stmt_srv->execute();
+$about_services = $stmt_srv->fetchAll(PDO::FETCH_ASSOC);
 
 // Mengubah baris baru pada misi menjadi elemen <li> untuk list HTML
 $mission_array = explode("\n", trim($about_mission));
@@ -95,11 +99,14 @@ foreach($mission_array as $mission) {
                  <h5 class="fw-bold mb-4" style="color: #003B73;">Produk & Layanan Kami</h5>
                  <p class="text-muted mb-3">Intercons melayani berbagai kebutuhan industri, meliputi:</p>
                  <div class="d-flex flex-wrap gap-2">
-                     <span class="badge border p-2" style="color: #003B73; background-color: #E1F5FE;"><i class="fas fa-cogs me-1"></i> Mechanical Engineering</span>
-                     <span class="badge border p-2" style="color: #003B73; background-color: #E1F5FE;"><i class="fas fa-bolt me-1"></i> Electrical Service</span>
-                     <span class="badge border p-2" style="color: #003B73; background-color: #E1F5FE;"><i class="fas fa-hard-hat me-1"></i> Civil Construction</span>
-                     <span class="badge border p-2" style="color: #003B73; background-color: #E1F5FE;"><i class="fas fa-box-open me-1"></i> Supply Material Industri</span>
-                 </div>
+    <?php if(empty($about_services)): ?>
+        <span class="badge border p-2" style="color: #003B73; background-color: #E1F5FE;"><i class="fas fa-info-circle me-1"></i> Belum ada layanan</span>
+    <?php else: ?>
+        <?php foreach($about_services as $srv): ?>
+            <span class="badge border p-2" style="color: #003B73; background-color: #E1F5FE;"><i class="fas fa-check-circle me-1"></i> <?php echo htmlspecialchars($srv['title']); ?></span>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>
                  <a href="#products" class="btn btn-sm mt-3 fw-bold shadow-sm" style="background-color: #005B96; color: white;">
                      Lihat Katalog Produk <i class="fas fa-arrow-right ms-1"></i>
                  </a>

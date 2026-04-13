@@ -129,6 +129,13 @@ switch ($page) {
         require_once 'views/admin/admin_contact.php'; // Memanggil halaman kontak
         require_once 'views/layouts/admin_footer.php';
         break;
+        
+    case 'admin_subscriber':
+        if(!isset($_SESSION['admin'])) { header('Location: ?page=login'); exit; }
+        require_once 'views/layouts/admin_header.php';
+        require_once 'views/admin/admin_subscriber.php';
+        require_once 'views/layouts/admin_footer.php';
+        break;
 
     // Tambahkan di dalam switch ($page)
 case 'admin_service':
