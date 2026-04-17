@@ -6,7 +6,10 @@
 session_start();
 require_once __DIR__ . '/config/database.php';
 
-if(!isset($_SESSION['admin'])) { header('Location: index.php?page=login'); exit; }
+if(!isset($_SESSION['admin'])) { 
+    header('Location: index.php?page=login'); 
+    exit; 
+}
 
 $db = (new Database())->getConnection();
 $action = isset($_GET['action']) ? $_GET['action'] : '';
@@ -33,7 +36,10 @@ if ($action == 'add' && $_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt = $db->prepare("INSERT INTO experiences (project_name, client_name, details, image_url) VALUES (:project_name, :client_name, :details, :image_url)");
     $stmt->execute([':project_name' => $project_name, ':client_name' => $client_name, ':details' => $details, ':image_url' => $image_url]);
     
-    echo "<script>alert('Proyek berhasil ditambahkan!'); window.location.href='index.php?page=admin_experience';</script>";
+    // PERUBAHAN DI SINI (SUCCESS ADD)
+    $_SESSION['swal_success'] = 'Proyek berhasil ditambahkan!';
+    header('Location: index.php?page=admin_experience');
+    exit;
 }
 
 // --- AKSI EDIT ---
@@ -61,7 +67,10 @@ elseif ($action == 'edit' && $_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt = $db->prepare("UPDATE experiences SET project_name = :project_name, client_name = :client_name, details = :details, image_url = :image_url WHERE id = :id");
     $stmt->execute([':project_name' => $project_name, ':client_name' => $client_name, ':details' => $details, ':image_url' => $image_url, ':id' => $id]);
     
-    echo "<script>alert('Data proyek berhasil diupdate!'); window.location.href='index.php?page=admin_experience';</script>";
+    // PERUBAHAN DI SINI (SUCCESS EDIT)
+    $_SESSION['swal_success'] = 'Data proyek berhasil diupdate!';
+    header('Location: index.php?page=admin_experience');
+    exit;
 }
 
 // --- AKSI HAPUS ---
@@ -80,6 +89,13 @@ elseif ($action == 'delete' && isset($_GET['id'])) {
     $del = $db->prepare("DELETE FROM experiences WHERE id = :id");
     $del->execute([':id' => $id]);
     
-    echo "<script>alert('Proyek berhasil dihapus!'); window.location.href='index.php?page=admin_experience';</script>";
+    // PERUBAHAN DI SINI (SUCCESS DELETE)
+    $_SESSION['swal_success'] = 'Proyek berhasil dihapus!';
+    header('Location: index.php?page=admin_experience');
+    exit;
+} else {
+    // Jika diakses tanpa parameter yang jelas
+    header('Location: index.php?page=admin_experience');
+    exit;
 }
 ?>

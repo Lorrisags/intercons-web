@@ -41,10 +41,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $insert->execute();
         }
     }
-
-    echo "<script>
-        alert('Perubahan Halaman About berhasil disimpan ke Database!');
-        window.location.href='index.php?page=admin_about';
-    </script>";
+// SESUDAHNYA
+$_SESSION['swal_success'] = 'Perubahan Halaman About berhasil disimpan ke Database!';
+$referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php?page=home';
+header('Location: index.php?page=admin_about&referer=' . urlencode($referer));
+exit;
+    
 }
 ?>

@@ -30,7 +30,6 @@ $sliders = $slider_json ? json_decode($slider_json, true) : [];
     </div>
 </div>
 
-<!-- Navigasi Tabs -->
 <ul class="nav nav-tabs mb-4 border-bottom-0" id="galleryTabs" role="tablist">
     <li class="nav-item" role="presentation">
         <button class="nav-link active fw-bold border-0 shadow-sm me-2 rounded-top-3 text-primary" id="gallery-tab" data-bs-toggle="tab" data-bs-target="#gallery" type="button" role="tab">
@@ -46,9 +45,6 @@ $sliders = $slider_json ? json_decode($slider_json, true) : [];
 
 <div class="tab-content mb-5" id="galleryTabsContent">
     
-    <!-- ============================================== -->
-    <!-- TAB 1: GALERI PROYEK                           -->
-    <!-- ============================================== -->
     <div class="tab-pane fade show active" id="gallery" role="tabpanel" aria-labelledby="gallery-tab">
         <div class="row g-4">
             <div class="col-lg-4">
@@ -96,7 +92,23 @@ $sliders = $slider_json ? json_decode($slider_json, true) : [];
                                             <h6 class="fw-bold mb-0 text-truncate" style="font-size: 0.85rem; color: #003B73;"><?php echo htmlspecialchars($item['title']); ?></h6>
                                             <small class="text-muted" style="font-size: 0.75rem;"><?php echo htmlspecialchars($item['loc']); ?></small>
                                         </div>
-                                        <a href="process_gallery.php?action=delete&id=<?php echo $item['id']; ?>" class="position-absolute top-0 end-0 m-2 btn btn-sm btn-danger shadow" onclick="return confirm('Hapus foto galeri ini?');" title="Hapus"><i class="fas fa-trash-alt"></i></a>
+                                        
+                                        <div class="position-absolute top-0 end-0 m-2 d-flex gap-1">
+                                            <button type="button" class="btn btn-sm btn-primary shadow btn-edit-gal" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#editGalleryModal"
+                                                    data-id="<?php echo $item['id']; ?>"
+                                                    data-title="<?php echo htmlspecialchars($item['title']); ?>"
+                                                    data-loc="<?php echo htmlspecialchars($item['loc']); ?>"
+                                                    data-img="<?php echo $item['img']; ?>"
+                                                    title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <a href="process_gallery.php?action=delete&id=<?php echo $item['id']; ?>" class="btn btn-sm btn-danger shadow btn-delete" title="Hapus">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </div>
+                                        
                                     </div>
                                 </div>
                                 <?php endforeach; ?>
@@ -108,9 +120,6 @@ $sliders = $slider_json ? json_decode($slider_json, true) : [];
         </div>
     </div>
 
-    <!-- ============================================== -->
-    <!-- TAB 2: TAMPILAN BERGESER (SLIDER BERANDA)      -->
-    <!-- ============================================== -->
     <div class="tab-pane fade" id="slider" role="tabpanel" aria-labelledby="slider-tab">
         <div class="row g-4">
             <div class="col-lg-4">
@@ -163,7 +172,7 @@ $sliders = $slider_json ? json_decode($slider_json, true) : [];
                                             <span class="badge mb-1" style="background-color: #E1F5FE; color: #003B73; font-size: 0.65rem;"><?php echo htmlspecialchars($item['category']); ?></span>
                                             <h6 class="fw-bold mb-0 text-truncate" style="font-size: 0.85rem; color: #005B96;"><?php echo htmlspecialchars($item['name']); ?></h6>
                                         </div>
-                                        <a href="process_gallery.php?action=delete_slider&id=<?php echo $item['id']; ?>" class="position-absolute top-0 end-0 m-2 btn btn-sm btn-danger shadow" onclick="return confirm('Hapus item dari tampilan bergeser?');" title="Hapus"><i class="fas fa-trash-alt"></i></a>
+                                        <a href="process_gallery.php?action=delete_slider&id=<?php echo $item['id']; ?>" class="position-absolute top-0 end-0 m-2 btn btn-sm btn-danger shadow btn-delete" title="Hapus"><i class="fas fa-trash-alt"></i></a>
                                     </div>
                                 </div>
                                 <?php endforeach; ?>
@@ -177,13 +186,73 @@ $sliders = $slider_json ? json_decode($slider_json, true) : [];
 
 </div>
 
-<!-- Auto-aktifkan tab Slider jika baru saja mengedit slider -->
+<div class="modal fade" id="editGalleryModal" tabindex="-1" aria-labelledby="editGalleryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editGalleryModalLabel">Edit Foto Galeri</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="process_update_gallery.php" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="edit_id">
+                    <input type="hidden" name="old_image" id="edit_old_image">
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold mb-1">Judul / Nama Proyek</label>
+                        <input type="text" class="form-control" name="title" id="edit_title" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold mb-1">Lokasi & Tahun</label>
+                        <input type="text" class="form-control" name="loc" id="edit_loc" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold mb-1">Ganti Foto (Opsional)</label>
+                        <input type="file" class="form-control" name="image" accept="image/png, image/jpeg, image/jpg, image/webp">
+                        <small class="text-muted">Biarkan kosong jika tidak ingin mengganti foto.</small>
+                        
+                        <div class="mt-2 text-center">
+                            <img src="" id="edit_image_preview" class="img-thumbnail" style="max-height: 120px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        // Auto-aktifkan tab Slider jika baru saja mengedit slider
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('tab') === 'slider') {
             var sliderTab = new bootstrap.Tab(document.getElementById('slider-tab'));
             sliderTab.show();
         }
+
+        // Script untuk Modal Edit Galeri
+        const editButtons = document.querySelectorAll('.btn-edit-gal');
+        editButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Ambil data dari tombol
+                const id = this.getAttribute('data-id');
+                const title = this.getAttribute('data-title');
+                const loc = this.getAttribute('data-loc');
+                const imageUrl = this.getAttribute('data-img');
+                
+                // Isi form
+                document.getElementById('edit_id').value = id;
+                document.getElementById('edit_title').value = title;
+                document.getElementById('edit_loc').value = loc;
+                document.getElementById('edit_old_image').value = imageUrl;
+                document.getElementById('edit_image_preview').src = imageUrl;
+            });
+        });
     });
 </script>

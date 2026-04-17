@@ -24,8 +24,9 @@ if ($action == 'add' && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt = $db->prepare("INSERT INTO services (title, image_url, short_description, full_description) VALUES (?, ?, ?, ?)");
     $stmt->execute([$_POST['title'], $image_url, $_POST['short_desc'], $_POST['full_desc']]);
     
-    echo "<script>alert('Layanan berhasil ditambahkan!'); window.location.href='index.php?page=admin_service';</script>";
-}
+    $_SESSION['swal_success'] = 'Layanan berhasil ditambahkan!';
+    header('Location: index.php?page=admin_service');
+    exit;}
 
 if ($action == 'delete') {
     // Hapus file gambar dari folder
@@ -42,6 +43,8 @@ if ($action == 'delete') {
     $stmt = $db->prepare("DELETE FROM services WHERE id = ?");
     $stmt->execute([$_GET['id']]);
     
-    echo "<script>alert('Layanan berhasil dihapus!'); window.location.href='index.php?page=admin_service';</script>";
+    $_SESSION['swal_success'] = 'Layanan berhasil dihapus!';
+    header('Location: index.php?page=admin_service');
+    exit;
 }
 ?>

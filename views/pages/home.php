@@ -1,7 +1,7 @@
 <?php
 /*
  * Path File: /views/pages/home.php
- * Deskripsi: Halaman Beranda Publik dengan slider animasi otomatis ke samping (Marquee CSS).
+ * Deskripsi: Halaman Beranda Publik dengan slider animasi otomatis ke samping (Marquee CSS) dan Hero Slider.
  */
 
 require_once __DIR__ . '/../../config/database.php';
@@ -43,7 +43,6 @@ $slider_items = array_merge($slider_products, $slider_products, $slider_products
     /* Animasi Marquee / Slider Berjalan Otomatis ke Samping */
     @keyframes scrollMarquee {
         0% { transform: translateX(0); }
-        /* Bergeser tepat sejauh jumlah produk asli, lalu mengulang dengan mulus */
         100% { transform: translateX(-<?php echo $total_scroll_distance; ?>px); } 
     }
     
@@ -58,11 +57,9 @@ $slider_items = array_merge($slider_products, $slider_products, $slider_products
     
     .product-slide-track {
         display: inline-flex;
-        /* Kecepatan animasi (ubah angka 20s untuk mempercepat/memperlambat) */
         animation: scrollMarquee 20s linear infinite;
     }
     
-    /* Animasi berhenti jika mouse diletakkan di atas gambar */
     .product-slide-track:hover {
         animation-play-state: paused;
     }
@@ -74,7 +71,7 @@ $slider_items = array_merge($slider_products, $slider_products, $slider_products
         border-radius: 12px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.06);
         overflow: hidden;
-        white-space: normal; /* Teks bisa turun ke bawah */
+        white-space: normal;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         cursor: pointer;
         flex: 0 0 auto;
@@ -105,7 +102,7 @@ $slider_items = array_merge($slider_products, $slider_products, $slider_products
 </style>
 
 <?php
-// Mengambil status visibilitas (Jika belum ada, anggap '1' alias tampil)
+// Mengambil status visibilitas
 $show_hero = isset($settings['show_hero']) ? $settings['show_hero'] : '1';
 $show_stats = isset($settings['show_stats']) ? $settings['show_stats'] : '1';
 $show_products = isset($settings['show_products']) ? $settings['show_products'] : '1';
@@ -129,56 +126,43 @@ $show_cta = isset($settings['show_cta']) ? $settings['show_cta'] : '1';
                     <a href="?page=service" class="btn btn-outline-light fw-bold px-4 py-2" style="border-radius: 8px;">Jelajahi Layanan</a>
                 </div>
             </div>
+
             <div class="col-lg-6">
-    <div id="heroCarousel" class="carousel slide carousel-fade rounded-4 shadow-lg border border-4 overflow-hidden" data-bs-ride="carousel" style="border-color: rgba(255,255,255,0.1) !important;">
-      
-    
-    <div class="carousel-inner">
-    <?php 
-    $slider_found = false;
-    $is_first = true;
-    for($i=1; $i<=3; $i++): 
-        $img_path = isset($settings['hero_img_'.$i]) ? trim($settings['hero_img_'.$i]) : '';
-        // Cek apakah data gambar ada (tidak kosong)
-        if(!empty($img_path)):
-    ?>
-        <div class="carousel-item <?php echo $is_first ? 'active' : ''; ?>" data-bs-interval="3000">
-            <img src="<?php echo htmlspecialchars($img_path); ?>" class="d-block w-100" style="height: 400px; object-fit: cover;">
-        </div>
-    <?php 
-        $is_first = false;
-        $slider_found = true;
-        endif; 
-    endfor; 
+                <div id="heroCarousel" class="carousel slide carousel-fade rounded-4 shadow-lg border border-4 overflow-hidden" data-bs-ride="carousel" style="border-color: rgba(255,255,255,0.1) !important;">
+                    <div class="carousel-inner">
+                        <?php 
+                        $slider_found = false;
+                        $is_first = true;
+                        for($i=1; $i<=3; $i++): 
+                            $img_path = isset($settings['hero_img_'.$i]) ? trim($settings['hero_img_'.$i]) : '';
+                            if(!empty($img_path)):
+                        ?>
+                            <div class="carousel-item <?php echo $is_first ? 'active' : ''; ?>" data-bs-interval="3000">
+                                <img src="<?php echo htmlspecialchars($img_path); ?>" class="d-block w-100" style="height: 400px; object-fit: cover;">
+                            </div>
+                        <?php 
+                            $is_first = false;
+                            $slider_found = true;
+                            endif; 
+                        endfor; 
 
-    // Tampilan default jika belum ada gambar
-    if(!$slider_found): ?>
-        <div class="carousel-item active">
-            <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800" class="d-block w-100" style="height: 400px; object-fit: cover;">
-        </div>
-    <?php endif; ?>
-</div>
+                        if(!$slider_found): ?>
+                            <div class="carousel-item active">
+                                <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800" class="d-block w-100" style="height: 400px; object-fit: cover;">
+                            </div>
+                        <?php endif; ?>
+                    </div>
 
-        <?php if($slider_found): ?>
-        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        </button>
-        <?php endif; ?>
-    </div>
-</div>
-        
-        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-        </button>
-    </div>
-</div>
-</div>
+                    <?php if($slider_found): ?>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    </button>
+                    <?php endif; ?>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -25,7 +25,35 @@
     </div>
 </footer>
 
-<!-- Bootstrap JS Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<?php if(isset($_SESSION['swal_success'])): ?>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '<?php echo $_SESSION['swal_success']; ?>',
+            timer: 4000,
+            showConfirmButton: false
+        });
+    });
+</script>
+<?php unset($_SESSION['swal_success']); endif; ?>
+
+<?php if(isset($_SESSION['swal_error'])): ?>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '<?php echo $_SESSION['swal_error']; ?>'
+        });
+    });
+</script>
+<?php unset($_SESSION['swal_error']); endif; ?>
+
 </body>
 </html>

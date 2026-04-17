@@ -14,7 +14,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $details_input = isset($_POST['details']) ? trim($_POST['details']) : '';
 
     // --- LOGIKA JIKA PESAN DARI FORM BERANDA (HOME) ---
-    // Ciri-cirinya: Form beranda mengirimkan email
     if (!empty($email)) {
         if (empty($service_needed)) {
             $service_needed = "Permintaan Beranda"; // Default kebutuhan
@@ -36,20 +35,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bindParam(':service', $service_needed);
     $stmt->bindParam(':details', $details);
 
+    // Ambil URL halaman tempat pengunjung mengisi form (Kembali ke tempat semula)
+    $referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php?page=home';
+
     if ($stmt->execute()) {
-        // Redirect kembali ke halaman sebelumnya dengan sukses
-        $referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php?page=home';
-        echo "<script>
-            alert('Terima kasih! Pesan Anda berhasil dikirim dan akan segera kami proses.');
-            window.location.href='" . $referer . "';
-        </script>";
+        // Tampilkan popup sukses di halaman pengunjung
+        $_SESSION['swal_success'] = 'Terima kasih! Pesan Anda berhasil dikirim dan akan segera kami proses.';
+        header('Location: ' . $referer);
+        exit;
     } else {
-        echo "<script>
-            alert('Maaf, terjadi kesalahan sistem.');
-            window.location.href='index.php?page=home';
-        </script>";
+        // Tampilkan popup error di halaman pengunjung
+        $_SESSION['swal_error'] = 'Maaf, terjadi kesalahan sistem saat mengirim pesan.';
+        header('Location: ' . $referer);
+        exit;
     }
 } else {
+    // Jika ada yang iseng mengakses file ini secara langsung via URL
     header("Location: index.php?page=home");
+    exit;
 }
 ?>

@@ -1,7 +1,7 @@
 <?php
 /*
  * Path File: /process_update_gallery.php
- * Deskripsi: Menyimpan upload file gambar dan perubahan teks halaman Galeri ke database.
+ * Deskripsi: Mengupdate item array JSON Galeri di tabel settings.
  */
 session_start();
 require_once __DIR__ . '/config/database.php';
@@ -12,77 +12,83 @@ if(!isset($_SESSION['admin'])) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $database = new Database();
-    $db = $database->getConnection();
+    $db = (new Database())->getConnection();
 
-    // Tentukan folder untuk menyimpan gambar (Otomatis dibuat jika belum ada)
+    $id = $_POST['id'];
+    $title = $_POST['title'];
+    $loc = $_POST['loc'];
+    $old_image = $_POST['old_image'];
+    $image_url = $old_image; // Default pakai gambar lama
+
     $upload_dir = __DIR__ . '/assets/uploads/gallery/';
-    if (!is_dir($upload_dir)) {
-        mkdir($upload_dir, 0777, true);
-    }
 
-    $data_to_save = [];
+    // --- PROSES UPLOAD GAMBAR BARU ---
+    if(isset($_FILES["image"]) && $_FILES["image"]["error"] === 0) {
+        $file_ext = strtolower(pathinfo($_FILES["image"]["name"], PATHINFO_EXTENSION));
+        $allowed_ext = ['jpg', 'jpeg', 'png', 'webp'];
 
-    // Looping untuk 6 blok galeri
-    for($i=1; $i<=6; $i++) {
-        
-        // 1. PROSES UPLOAD FILE GAMBAR
-        if(isset($_FILES["gal_{$i}_img"]) && $_FILES["gal_{$i}_img"]["error"] === 0) {
-            $file_tmp = $_FILES["gal_{$i}_img"]["tmp_name"];
-            $file_name = $_FILES["gal_{$i}_img"]["name"];
+        if(in_array($file_ext, $allowed_ext)) {
+            $new_file_name = "gal_" . time() . "_" . uniqid() . "." . $file_ext;
+            $destination = $upload_dir . $new_file_name;
             
-            // Ambil ekstensi file (jpg, png, dll)
-            $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-            $allowed_ext = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-
-            // Cek apakah file yang diupload adalah gambar
-            if(in_array($file_ext, $allowed_ext)) {
-                // Buat nama file baru agar tidak bentrok (contoh: gallery_1_16900000.jpg)
-                $new_file_name = "gallery_" . $i . "_" . time() . "." . $file_ext;
-                $destination = $upload_dir . $new_file_name;
+            if(move_uploaded_file($_FILES["image"]["tmp_name"], $destination)) {
+                $image_url = 'assets/uploads/gallery/' . $new_file_name;
                 
-                // Pindahkan file dari memori sementara ke folder assets
-                if(move_uploaded_file($file_tmp, $destination)) {
-                    // Simpan URL/Path baru ke database
-                    $data_to_save["gal_{$i}_img"] = 'assets/uploads/gallery/' . $new_file_name;
+                // Hapus file lama
+                if(!empty($old_image) && file_exists(__DIR__ . '/' . $old_image)) {
+                    unlink(__DIR__ . '/' . $old_image);
                 }
             } else {
-                echo "<script>alert('Gagal! Format file Foto {$i} tidak didukung (Gunakan JPG, PNG, WEBP).');</script>";
+                $_SESSION['swal_error'] = 'Gagal mengupload foto ke server.';
+                header('Location: index.php?page=admin_gallery');
+                exit;
             }
         } else {
-            // Jika admin TIDAK memilih file baru, gunakan URL/gambar lama
-            if(isset($_POST["old_gal_{$i}_img"])) {
-                $data_to_save["gal_{$i}_img"] = $_POST["old_gal_{$i}_img"];
-            }
-        }
-
-        // 2. AMBIL TEKS JUDUL & LOKASI
-        if(isset($_POST["gal_{$i}_title"])) $data_to_save["gal_{$i}_title"] = $_POST["gal_{$i}_title"];
-        if(isset($_POST["gal_{$i}_loc"])) $data_to_save["gal_{$i}_loc"] = $_POST["gal_{$i}_loc"];
-    }
-
-    // Melakukan proses Insert / Update (Upsert) ke tabel settings
-    foreach ($data_to_save as $key => $value) {
-        $check = $db->prepare("SELECT setting_key FROM settings WHERE setting_key = :key");
-        $check->bindParam(':key', $key);
-        $check->execute();
-
-        if ($check->rowCount() > 0) {
-            $update = $db->prepare("UPDATE settings SET setting_value = :value WHERE setting_key = :key");
-            $update->bindParam(':value', $value);
-            $update->bindParam(':key', $key);
-            $update->execute();
-        } else {
-            $insert = $db->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (:key, :value)");
-            $insert->bindParam(':key', $key);
-            $insert->bindParam(':value', $value);
-            $insert->execute();
+            $_SESSION['swal_error'] = 'Format foto tidak didukung!';
+            header('Location: index.php?page=admin_gallery');
+            exit;
         }
     }
 
-    echo "<script>
-        alert('Data Halaman Galeri berhasil disimpan!');
-        window.location.href='index.php?page=admin_gallery';
-    </script>";
+    // --- PROSES UPDATE JSON KE DATABASE ---
+    // 1. Ambil JSON Galeri saat ini
+    $stmt = $db->prepare("SELECT setting_value FROM settings WHERE setting_key = 'gallery_data'");
+    $stmt->execute();
+    $gallery_json = $stmt->fetchColumn();
+    
+    // 2. Ubah dari JSON String ke bentuk Array PHP
+    $galleries = $gallery_json ? json_decode($gallery_json, true) : [];
+    
+    // 3. Cari item yang mau di-edit dan ubah datanya
+    $is_updated = false;
+    foreach ($galleries as &$item) {
+        if ($item['id'] == $id) {
+            $item['title'] = $title;
+            $item['loc'] = $loc;
+            $item['img'] = $image_url;
+            $is_updated = true;
+            break;
+        }
+    }
+    
+    if ($is_updated) {
+        // 4. Kembalikan jadi format JSON dan Simpan ke database
+        $new_json = json_encode($galleries);
+        $update_stmt = $db->prepare("UPDATE settings SET setting_value = :val WHERE setting_key = 'gallery_data'");
+        
+        if ($update_stmt->execute([':val' => $new_json])) {
+            $_SESSION['swal_success'] = 'Foto Galeri berhasil diperbarui!';
+        } else {
+            $_SESSION['swal_error'] = 'Terjadi kesalahan saat menyimpan database.';
+        }
+    } else {
+        $_SESSION['swal_error'] = 'Data galeri tidak ditemukan.';
+    }
+
+    header('Location: index.php?page=admin_gallery');
+    exit;
+} else {
+    header('Location: index.php?page=admin_gallery');
+    exit;
 }
 ?>

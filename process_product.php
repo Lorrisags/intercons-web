@@ -27,7 +27,9 @@ if ($action == 'add' && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt = $db->prepare("INSERT INTO products (name, category, image_url, description) VALUES (?, ?, ?, ?)");
     $stmt->execute([$_POST['name'], $_POST['category'], $image_url, $_POST['description']]);
     
-    echo "<script>alert('Produk berhasil ditambahkan!'); window.location.href='index.php?page=admin_products';</script>";
+    $_SESSION['swal_success'] = 'Produk berhasil ditambahkan!';
+    header('Location: index.php?page=admin_products');
+    exit;
 }
 
 // AKSI HAPUS PRODUK
@@ -47,6 +49,8 @@ if ($action == 'delete') {
     $stmt = $db->prepare("DELETE FROM products WHERE id = ?");
     $stmt->execute([$_GET['id']]);
     
-    echo "<script>alert('Produk berhasil dihapus!'); window.location.href='index.php?page=admin_products';</script>";
+    $_SESSION['swal_success'] = 'Produk berhasil dihapus!';
+    header('Location: index.php?page=admin_products');
+    exit;
 }
 ?>

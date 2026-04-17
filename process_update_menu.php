@@ -26,6 +26,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $data_to_save["menu_{$key}_show"] = isset($_POST["menu_{$key}_show"]) ? '1' : '0';
     }
 
+    $is_success = true;
+
     // Upsert (Insert/Update) ke tabel settings
     foreach ($data_to_save as $key => $value) {
         $check = $db->prepare("SELECT setting_key FROM settings WHERE setting_key = :key");
@@ -36,18 +38,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $update = $db->prepare("UPDATE settings SET setting_value = :value WHERE setting_key = :key");
             $update->bindParam(':value', $value);
             $update->bindParam(':key', $key);
-            $update->execute();
+            if(!$update->execute()) $is_success = false;
         } else {
             $insert = $db->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (:key, :value)");
             $insert->bindParam(':key', $key);
             $insert->bindParam(':value', $value);
-            $insert->execute();
+            if(!$insert->execute()) $is_success = false;
         }
     }
 
-    echo "<script>
-        alert('Pengaturan Menu berhasil disimpan!');
-        window.location.href='index.php?page=admin_menu';
-    </script>";
+    // --- PERUBAHAN: MENGGUNAKAN FLASH SESSION SWEETALERT ---
+    if ($is_success) {
+        $_SESSION['swal_success'] = 'Pengaturan Menu berhasil disimpan!';
+    } else {
+        $_SESSION['swal_error'] = 'Terjadi kesalahan saat menyimpan pengaturan menu.';
+    }
+    
+    header('Location: index.php?page=admin_menu');
+    exit;
+} else {
+    // Jika diakses langsung via URL
+    header('Location: index.php?page=admin_menu');
+    exit;
 }
 ?>

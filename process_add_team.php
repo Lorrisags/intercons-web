@@ -46,15 +46,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if(move_uploaded_file($file_tmp, $destination)) {
                 $photo_url = 'assets/uploads/team/' . $new_file_name;
             } else {
-                echo "<script>alert('Gagal mengupload file ke server.'); window.location.href='index.php?page=admin_team';</script>";
+                $_SESSION['swal_error'] = 'Gagal mengupload file ke server.';
+                header('Location: index.php?page=admin_team');
                 exit;
             }
         } else {
-            echo "<script>alert('Format foto tidak didukung! Gunakan JPG, PNG, atau WEBP.'); window.location.href='index.php?page=admin_team';</script>";
+            $_SESSION['swal_error'] = 'Format foto tidak didukung! Gunakan JPG, PNG, atau WEBP.';
+            header('Location: index.php?page=admin_team');
             exit;
         }
     } else {
-        echo "<script>alert('Foto wajib diupload!'); window.location.href='index.php?page=admin_team';</script>";
+        $_SESSION['swal_error'] = 'Foto wajib diupload!';
+        header('Location: index.php?page=admin_team');
         exit;
     }
 
@@ -69,18 +72,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bindParam(':photo_url', $photo_url);
 
     if($stmt->execute()) {
-        echo "<script>
-            alert('Anggota tim berhasil ditambahkan!');
-            window.location.href='index.php?page=admin_team';
-        </script>";
+        $_SESSION['swal_success'] = 'Anggota tim berhasil ditambahkan!';
+        header('Location: index.php?page=admin_team');
+        exit;
     } else {
-        echo "<script>
-            alert('Terjadi kesalahan saat menyimpan ke database.');
-            window.location.href='index.php?page=admin_team';
-        </script>";
+        // PERBAIKAN: Gunakan swal_error dan isi tujuannya
+        $_SESSION['swal_error'] = 'Terjadi kesalahan saat menyimpan ke database.';
+        header('Location: index.php?page=admin_team');
+        exit;
     }
 } else {
-    // Jika diakses langsung tanpa lewat form
+    // PERBAIKAN: Lempar kembali jika file diakses langsung tanpa menekan tombol submit
     header('Location: index.php?page=admin_team');
+    exit;
 }
 ?>

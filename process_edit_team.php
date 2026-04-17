@@ -69,15 +69,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bindParam(':id', $id);
 
     if($stmt->execute()) {
-        echo "<script>
-            alert('Data anggota tim berhasil diperbarui!');
-            window.location.href='index.php?page=admin_team';
-        </script>";
+         $_SESSION['swal_success'] = 'Anggota tim berhasil diperbarui!';
+        header('Location: index.php?page=admin_team');
+        exit;
     } else {
-        echo "<script>
-            alert('Terjadi kesalahan saat mengupdate database.');
-            window.location.href='index.php?page=admin_team';
-        </script>";
+        $_SESSION['swal_error'] = 'Terjadi kesalahan saat mengupdate database.';
+        header('Location: index.php?page=admin_team');
+        exit;
     }
 } else {
     header('Location: index.php?page=admin_team');

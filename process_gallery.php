@@ -60,8 +60,9 @@ if ($action === 'add') {
                     'loc'   => $_POST['loc']
                 ]);
                 saveDataToJson($db, 'gallery_data', $galleries);
-                echo "<script>alert('Foto Galeri ditambahkan!'); window.location.href='index.php?page=admin_gallery';</script>";
-                exit;
+                $_SESSION['swal_success'] = 'Foto Galeri berhasil ditambahkan!';
+    header('Location: index.php?page=admin_gallery');
+    exit;
             }
         }
     }
@@ -78,7 +79,8 @@ elseif ($action === 'delete' && isset($_GET['id'])) {
         }
     }
     saveDataToJson($db, 'gallery_data', $new_galleries);
-    echo "<script>alert('Foto Galeri dihapus!'); window.location.href='index.php?page=admin_gallery';</script>";
+    $_SESSION['swal_success'] = 'Foto Galeri berhasil dihapus!';
+    header('Location: index.php?page=admin_gallery');
     exit;
 }
 
@@ -105,7 +107,8 @@ if ($action === 'add_slider') {
                     'category' => $_POST['category']
                 ]);
                 saveDataToJson($db, 'slider_data', $sliders);
-                echo "<script>alert('Item Tampilan Bergeser ditambahkan!'); window.location.href='index.php?page=admin_gallery&tab=slider';</script>";
+                $_SESSION['swal_success'] = 'Item Tampilan Bergeser berhasil ditambahkan!';
+                header('Location: index.php?page=admin_gallery&tab=slider');
                 exit;
             }
         }
@@ -123,7 +126,8 @@ elseif ($action === 'delete_slider' && isset($_GET['id'])) {
         }
     }
     saveDataToJson($db, 'slider_data', $new_sliders);
-    echo "<script>alert('Item Tampilan Bergeser dihapus!'); window.location.href='index.php?page=admin_gallery&tab=slider';</script>";
+    $_SESSION['swal_success'] = 'Item Tampilan Bergeser berhasil dihapus!';
+    header('Location: index.php?page=admin_gallery&tab=slider');
     exit;
 }
 
