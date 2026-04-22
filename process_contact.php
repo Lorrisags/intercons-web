@@ -60,15 +60,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->SMTPAuth   = true;
             
             // ⚠️ UBAH DUA BARIS INI DENGAN AKUN KAMU
-            $mail->Username   = 'alfaro3721@gmail.com'; // Email Gmail yang kamu gunakan
-            $mail->Password   = 'iizt wpvi kgmq qzue'; // Paste 16 digit huruf tanpa spasi
+            $mail->Username   = 'sss@gmail.com'; // Email Gmail yang kamu gunakan
+            $mail->Password   = 'iiz'; // Paste 16 digit huruf tanpa spasi
             
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
             $mail->Port       = 465;
 
             // Pengirim & Penerima
-            $mail->setFrom('alfaro3721@gmail.com', 'Notifikasi Website Intercons'); // Samakan dengan Username
-            $mail->addAddress('130023040@student.unusa.ac.id', 'Admin Intercons'); // Email perusahaan aslinya
+            $mail->setFrom('sss@gmail.com', 'Notifikasi Website Intercons'); // Samakan dengan Username
+            $mail->addAddress('sad@student', 'Admin Intercons'); // Email perusahaan aslinya
             
             // Agar jika admin menekan "Reply", balasannya langsung masuk ke email klien
             if (!empty($email)) {
