@@ -131,27 +131,104 @@ $show_cta = isset($settings['show_cta']) ? $settings['show_cta'] : '1';
             </div>
         </div>
 
+       <div class="col-12">
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-header bg-white py-3 border-bottom-0">
+                    <h6 class="fw-bold mb-0 text-primary"><i class="fas fa-box-open me-2"></i>5. Pengaturan Slider Produk (Berjalan)</h6>
+                </div>
+                <div class="card-body p-4 bg-light rounded-bottom-3">
+                    <div id="sliderItemsContainer">
+                        <?php 
+                        $slider_json = isset($settings['slider_data']) ? $settings['slider_data'] : '[]';
+                        $slider_data = json_decode($slider_json, true) ?: [];
+                        
+                        foreach($slider_data as $index => $item): 
+                        ?>
+                        <div class="row g-2 mb-3 align-items-center border-bottom pb-3 slider-item">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold text-muted">Nama Produk</label>
+                                <input type="text" name="slider_name[]" class="form-control" value="<?php echo htmlspecialchars($item['name']); ?>" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold text-muted">Kategori</label>
+                                <input type="text" name="slider_category[]" class="form-control" value="<?php echo htmlspecialchars($item['category']); ?>" required>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label small fw-bold text-muted">Gambar Produk (Upload)</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <?php if(!empty($item['img'])): ?>
+                                        <img src="<?php echo htmlspecialchars($item['img']); ?>" class="img-thumbnail" style="height: 45px; width: 60px; object-fit: cover;">
+                                    <?php endif; ?>
+                                    <input type="file" name="slider_img[]" class="form-control form-control-sm" accept="image/*">
+                                    <input type="hidden" name="old_slider_img[]" value="<?php echo htmlspecialchars($item['img']); ?>">
+                                </div>
+                            </div>
+                            <div class="col-md-1 text-end">
+                                <label class="form-label d-block">&nbsp;</label>
+                                <button type="button" class="btn btn-danger btn-sm w-100 remove-slider-item"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <button type="button" id="addSliderItem" class="btn btn-outline-primary btn-sm mt-2">
+                        <i class="fas fa-plus me-1"></i> Tambah Item Slider
+                    </button>
+                </div>
+            </div>
+        </div>
+
        <button type="submit" id="btnSubmit" class="btn btn-primary fw-bold px-4 shadow-sm py-2">
-    <i class="fas fa-save me-2"></i> Simpan Perubahan
-</button>
+            <i class="fas fa-save me-2"></i> Simpan Perubahan
+       </button>
     </div>
 </form>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+// --- SCRIPT 1: Menambah dan Menghapus Baris Slider ---
+const btnAddSlider = document.getElementById('addSliderItem');
+if(btnAddSlider) {
+    btnAddSlider.onclick = function() {
+        let container = document.getElementById('sliderItemsContainer');
+        let newItem = `
+            <div class="row g-2 mb-3 align-items-center border-bottom pb-3 slider-item">
+                <div class="col-md-3">
+                    <input type="text" name="slider_name[]" class="form-control" placeholder="Nama Produk" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="slider_category[]" class="form-control" placeholder="Kategori" required>
+                </div>
+                <div class="col-md-5">
+                    <input type="file" name="slider_img[]" class="form-control form-control-sm" accept="image/*" required>
+                    <input type="hidden" name="old_slider_img[]" value="">
+                </div>
+                <div class="col-md-1 text-end">
+                    <button type="button" class="btn btn-danger btn-sm w-100 remove-slider-item"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>`;
+        container.insertAdjacentHTML('beforeend', newItem);
+    };
+}
+
+document.addEventListener('click', function(e) {
+    if(e.target && e.target.closest('.remove-slider-item')) {
+        e.target.closest('.slider-item').remove();
+    }
+});
+
+
+// --- SCRIPT 2: Proses Simpan Data (AJAX) ---
 document.getElementById('formAdminHome').addEventListener('submit', function(e) {
-    e.preventDefault(); // Tahan form agar tidak pindah halaman
+    e.preventDefault(); 
     
     let formData = new FormData(this);
     let btnSubmit = document.getElementById('btnSubmit');
     let originalText = btnSubmit.innerHTML;
     
-    // Ubah tombol jadi status "Loading..."
     btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Menyimpan...';
     btnSubmit.disabled = true;
 
-    // Kirim data ke PHP di belakang layar (AJAX)
     fetch('process_update_home.php', {
         method: 'POST',
         body: formData
@@ -159,16 +236,16 @@ document.getElementById('formAdminHome').addEventListener('submit', function(e) 
     .then(response => response.json())
     .then(data => {
         if(data.status === 'success') {
-            // Tampilkan Popup Sukses
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
                 text: data.message,
                 showConfirmButton: false,
-                timer: 2000 // Popup hilang otomatis dalam 2 detik
+                timer: 2000 
+            }).then(() => {
+                window.location.reload(); // Reload halaman agar gambar baru muncul
             });
         } else {
-            // Tampilkan Popup Gagal
             Swal.fire({
                 icon: 'error',
                 title: 'Gagal',
@@ -184,7 +261,6 @@ document.getElementById('formAdminHome').addEventListener('submit', function(e) 
         });
     })
     .finally(() => {
-        // Kembalikan tombol ke wujud aslinya
         btnSubmit.innerHTML = originalText;
         btnSubmit.disabled = false;
     });

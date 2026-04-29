@@ -4,6 +4,18 @@
  * Deskripsi: Halaman Beranda Publik dengan slider animasi otomatis ke samping (Marquee CSS) dan Hero Slider.
  */
 
+global $db_conn;
+$captcha_active = '0';
+$site_key = '';
+
+if ($db_conn) {
+    $stmt_c = $db_conn->query("SELECT setting_key, setting_value FROM settings WHERE setting_key IN ('captcha_active', 'captcha_site_key')");
+    while ($row = $stmt_c->fetch(PDO::FETCH_ASSOC)) {
+        if($row['setting_key'] == 'captcha_active') $captcha_active = $row['setting_value'];
+        if($row['setting_key'] == 'captcha_site_key') $site_key = $row['setting_value'];
+    }
+}
+
 require_once __DIR__ . '/../../config/database.php';
 $db = (new Database())->getConnection();
 

@@ -237,84 +237,40 @@
         </div>
 
         <!-- Captcha Section (Dropdown) -->
-        <a href="#captchaSubmenu" data-bs-toggle="collapse" class="nav-link">
-            <div class="d-flex align-items-center"><i class="fas fa-shield-alt icon-main"></i> Captcha Section</div>
-            <i class="fas fa-chevron-right"></i>
-        </a>
-        <div class="collapse" id="captchaSubmenu">
-            <a href="#" class="nav-link position-relative">Pengaturan Captcha</a>
-        </div>
+        <a href="#captchaSubmenu" data-bs-toggle="collapse" class="nav-link <?php echo ($page != 'admin_captcha') ? 'collapsed' : ''; ?>" aria-expanded="<?php echo ($page == 'admin_captcha') ? 'true' : 'false'; ?>">
+    <div class="d-flex align-items-center"><i class="fas fa-shield-alt icon-main"></i> Captcha Section</div>
+    <i class="fas fa-chevron-right"></i>
+</a>
+<div class="collapse <?php echo ($page == 'admin_captcha') ? 'show' : ''; ?>" id="captchaSubmenu">
+    <a href="?page=admin_captcha" class="nav-link position-relative <?php echo ($page == 'admin_captcha') ? 'active-sub text-white' : ''; ?>">Pengaturan Captcha</a>
+</div>
 
         <!-- Dynamic Pages -->
         <a href="#" class="nav-link">
             <div class="d-flex align-items-center"><i class="fas fa-stream icon-main"></i> Dynamic Pages</div>
         </a>
 
-        <div class="menu-heading">Content</div>
-
-        <!-- News (Dropdown) -->
-        <a href="#newsSubmenu" data-bs-toggle="collapse" class="nav-link">
-            <div class="d-flex align-items-center"><i class="far fa-newspaper icon-main"></i> News</div>
-            <i class="fas fa-chevron-right"></i>
-        </a>
-        <div class="collapse" id="newsSubmenu">
-            <a href="#" class="nav-link position-relative">Semua Berita</a>
-            <a href="#" class="nav-link position-relative">Tambah Berita</a>
-        
-        </div>
-
-        <!-- Event -->
-        <a href="#" class="nav-link">
-            <div class="d-flex align-items-center"><i class="far fa-calendar-check icon-main"></i> Event</div>
-        </a>
-
-        <!-- Subscriber (Dropdown) -->
+         <!-- Subscriber (Dropdown) -->
         <a href="#subscriberSubmenu" data-bs-toggle="collapse" class="nav-link">
     <div class="d-flex align-items-center"><i class="fas fa-envelope-open-text icon-main"></i> Subscriber</div>
     <i class="fas fa-chevron-right"></i>
 </a>
 <div class="collapse <?php echo ($page == 'admin_subscriber') ? 'show' : ''; ?>" id="subscriberSubmenu">
     <a href="?page=admin_subscriber" class="nav-link position-relative <?php echo ($page == 'admin_subscriber') ? 'active-sub text-white' : ''; ?>">Daftar Subscriber</a>
-</div>
-
-        <div class="menu-heading">Media & Components</div>
-
-        <!-- Team Member -->
-        <a href="#" class="nav-link">
-            <div class="d-flex align-items-center"><i class="fas fa-user-friends icon-main"></i> Team Member</div>
-        </a>
-
-        <!-- Slider -->
-        <a href="#" class="nav-link">
-            <div class="d-flex align-items-center"><i class="far fa-images icon-main"></i> Slider</div>
-        </a>
-
-        <!-- Testimonial -->
-        <a href="#" class="nav-link">
-            <div class="d-flex align-items-center"><i class="far fa-comments icon-main"></i> Testimonial</div>
-        </a>
-
-        <!-- Photo Gallery -->
-        <a href="#" class="nav-link">
-            <div class="d-flex align-items-center"><i class="fas fa-camera-retro icon-main"></i> Photo Gallery</div>
-        </a>
+</div>    
 
         <div class="menu-heading">System</div>
 
         <!-- Menu -->
-        <a href="#" class="nav-link">
-            <div class="d-flex align-items-center"><i class="fas fa-bars icon-main"></i> Nav Menu</div>
-        </a>
+        <a href="?page=admin_menu" class="nav-link <?= ($page == 'admin_menu') ? 'active' : ''; ?>">
+    <div class="d-flex align-items-center"><i class="fas fa-bars icon-main"></i> Nav Menu</div>
+</a>
 
-        <!-- Language -->
-        <a href="#" class="nav-link">
-            <div class="d-flex align-items-center"><i class="fas fa-globe icon-main"></i> Language</div>
-        </a>
-        
+    
         <!-- Footer Section -->
-        <a href="#" class="nav-link">
-            <div class="d-flex align-items-center"><i class="fas fa-shoe-prints icon-main"></i> Footer Section</div>
-        </a>
+        <a href="?page=admin_footer" class="nav-link <?= ($page == 'admin_footer') ? 'active' : ''; ?>">
+    <div class="d-flex align-items-center"><i class="fas fa-shoe-prints icon-main"></i> Footer Section</div>
+</a>
         
     </div>
 

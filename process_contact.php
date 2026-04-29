@@ -14,6 +14,45 @@ require __DIR__ . '/vendor/autoload.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $db = (new Database())->getConnection();
 
+    // ==========================================
+    // VALIDASI GOOGLE RECAPTCHA
+    // ==========================================
+    $stmt_cap = $db->query("SELECT setting_key, setting_value FROM settings WHERE setting_key IN ('captcha_active', 'captcha_secret_key')");
+    $captcha_settings = [];
+    while ($row = $stmt_cap->fetch(PDO::FETCH_ASSOC)) {
+        $captcha_settings[$row['setting_key']] = $row['setting_value'];
+    }
+
+    $referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php?page=home';
+
+    if (isset($captcha_settings['captcha_active']) && $captcha_settings['captcha_active'] == '1') {
+        $recaptcha_response = isset($_POST['g-recaptcha-response']) ? $_POST['g-recaptcha-response'] : '';
+        
+        // Jika pengunjung tidak mencentang kotak captcha
+        if (empty($recaptcha_response)) {
+            $_SESSION['swal_error'] = 'Harap centang kotak "Saya bukan robot" terlebih dahulu.';
+            header('Location: ' . $referer);
+            exit;
+        }
+
+        // Verifikasi ke server Google
+        $secret_key = $captcha_settings['captcha_secret_key'];
+        $verify_url = "https://www.google.com/recaptcha/api/siteverify?secret={$secret_key}&response={$recaptcha_response}";
+        $verify_response = file_get_contents($verify_url);
+        $response_data = json_decode($verify_response);
+
+        // Jika terdeteksi sebagai Bot / Gagal verifikasi
+        if (!$response_data->success) {
+            $_SESSION['swal_error'] = 'Validasi Captcha gagal. Silakan coba lagi.';
+            header('Location: ' . $referer);
+            exit;
+        }
+    }
+    // ==========================================
+
+    $company_name = isset($_POST['company_name']) ? trim($_POST['company_name']) : '';
+    // ... (sisa kode Anda tetap sama di bawahnya)
+
     $company_name = isset($_POST['company_name']) ? trim($_POST['company_name']) : '';
     $contact_name = isset($_POST['contact_name']) ? trim($_POST['contact_name']) : '';
     $email = isset($_POST['email']) ? trim($_POST['email']) : '';
